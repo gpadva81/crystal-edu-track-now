@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:07:33.525Z",
-  "currentIteration": 1,
+  "updatedAt": "2026-02-18T10:09:21.775Z",
+  "currentIteration": 2,
   "maxIterations": 50,
-  "tasksCompleted": 1,
+  "tasksCompleted": 2,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -23,8 +23,8 @@
       {
         "id": "US-002",
         "title": "User Login and Password Reset",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-003",
@@ -170,6 +170,16 @@
       "durationMs": 233330,
       "startedAt": "2026-02-18T10:02:07.069Z",
       "endedAt": "2026-02-18T10:06:00.399Z"
+    },
+    {
+      "iteration": 2,
+      "status": "completed",
+      "taskId": "US-002",
+      "taskTitle": "User Login and Password Reset",
+      "taskCompleted": true,
+      "durationMs": 92057,
+      "startedAt": "2026-02-18T10:06:01.466Z",
+      "endedAt": "2026-02-18T10:07:33.523Z"
     }
   ],
   "skippedTaskIds": [],

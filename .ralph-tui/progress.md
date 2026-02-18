@@ -34,3 +34,15 @@ after each iteration and it's included in prompts for context.
   - US-002 was fully implemented alongside US-001 in prior iterations. The login flow, password reset, auth state listener, and invite redirect were all already functional.
   - The `pendingInvite` redirect happens inside `fetchProfile()` in AuthContext, not in the Login page itself. This is correct because it fires on any auth state change (login or register).
 ---
+
+## 2026-02-18 - US-003
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — the Account Setup Flow was fully implemented in prior commits (769fd83, 496ec2e).
+- **Files verified**:
+  - `src/components/auth/SetupFlow.jsx` — Step 1: "I'm a Student" / "I'm a Parent" buttons (lines 41-91). Step 2 Student: name/grade/school form → `Student.create()` with `student_user_id` (lines 19-27, 93-143). Step 2 Parent: dynamic child cards with add/remove → `Student.create()` with `parent_user_id` and random `avatar_color` (lines 29-38, 145-225). Both paths call `base44.auth.updateMe({ account_type })` to persist.
+  - `src/Layout.jsx` — Line 233: `if (!user?.account_type)` blocks access to authenticated pages by returning `<SetupFlow>` instead of the main layout. `onComplete` triggers `checkAppState()` to re-fetch profile.
+- **Learnings:**
+  - US-003 was fully implemented in the same prior iteration that built the core auth flow. All six acceptance criteria pass without changes.
+  - The setup flow is a blocking gate in `Layout.jsx`, not in routing. This means even if someone navigates directly to an authenticated URL, they still see the setup flow first.
+  - Parent child cards use random avatar colors from a fixed set of 5 (`blue`, `green`, `purple`, `orange`, `pink`). Student accounts always get `blue`.
+  - The `base44.auth.updateMe()` call updates the `profiles` table, and `checkAppState()` in AuthContext re-fetches the profile to pick up the new `account_type`.
+---
