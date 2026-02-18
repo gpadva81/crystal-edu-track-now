@@ -218,6 +218,24 @@ after each iteration and it's included in prompts for context.
   - Pre-existing lint errors remain at 22. No new lint issues introduced.
 ---
 
+## 2026-02-18 - US-016
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Achievement Badges were fully implemented in a prior iteration alongside US-004 (Student Dashboard) and the Rewards page.
+- **Files verified** (no changes needed):
+  - `src/components/dashboard/GamificationCard.jsx` — 4 badges defined (Beginner/5 completed, Dedicated/20 completed, On Fire/3-day streak, Champion/50 completed) at lines 60-89. Auto-unlock via `useEffect` at lines 91-102: checks if `badge.unlocked && achievement && !achievement.unlocked`, then calls `unlockMutation.mutate()` with `{ unlocked: true, unlocked_date: new Date().toISOString() }`. Badge grid displayed at lines 153-192.
+  - `src/pages/Rewards.jsx` — Same 4 badges with progress bars, reward editing (parent), reward display (student), and unlock status. Full badge cards at lines 142-251. Achievement data queried from `achievement` table filtered by `student_id`.
+  - `supabase-fix-schema.sql` — `achievement` table with `student_id`, `name`, `unlocked` (boolean), `unlocked_date` (timestamptz), `reward` (text), and RLS policies for CRUD.
+- **Acceptance Criteria Verification:**
+  - [x] 4 badges: Beginner (5 completed), Dedicated (20), On Fire (3-day streak), Champion (50) — `GamificationCard.jsx:60-89`, `Rewards.jsx:12-45`
+  - [x] Auto-unlocked on render when conditions are met — `GamificationCard.jsx:91-102` (useEffect with unlockMutation)
+  - [x] `unlocked_date` recorded in `achievement` table — `GamificationCard.jsx:98` (`unlocked_date: new Date().toISOString()`), schema at `supabase-fix-schema.sql:258`
+  - [x] Badge grid displayed on Dashboard and Rewards page — Dashboard: `GamificationCard.jsx:153-192`, Rewards: `Rewards.jsx:142-251`, route: `pages.config.js:72`, nav: `Layout.jsx:38`
+- **Learnings:**
+  - US-016 was fully implemented in a prior iteration alongside US-004 (Dashboard) and the Rewards page. All four acceptance criteria pass without any changes.
+  - The badge unlock logic lives in `GamificationCard` (Dashboard), not in `Rewards`. The Rewards page only reads achievement state — it doesn't auto-unlock. This means badges only auto-unlock when the Dashboard is rendered.
+  - The `achievement` table uses a separate row per badge per student (not a single JSON column). This allows the upsert pattern in `Rewards.jsx:64-82` for setting rewards.
+  - Pre-existing unused `Badge` import in `GamificationCard.jsx` (known lint issue, not from current work).
+---
+
 ## 2026-02-18 - US-013
 - **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Tutor File Attachments were fully implemented in a prior iteration alongside US-011 (AI Tutor Chat).
 - **Files verified** (no changes needed):
