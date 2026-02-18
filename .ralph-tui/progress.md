@@ -120,3 +120,20 @@ after each iteration and it's included in prompts for context.
   - The calendar component receives filtered assignments from the parent, so status filtering from the Assignments page toolbar also applies to the calendar view.
   - Pre-existing unused imports in HomeworkCalendar (`Badge`) and Assignments (`Select*`, `Filter`) are known lint issues from prior iterations.
 ---
+
+## 2026-02-18 - US-008
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — all four assignment actions were fully implemented in prior iterations.
+- **Files verified** (no changes needed):
+  - `src/pages/Assignments.jsx` — `sendReminder()` (lines 65-80): fetches current user via `base44.auth.me()`, sends HTML email with assignment title, subject, due date, and description via `base44.integrations.Core.SendEmail()`, shows success toast. `openTutor()` (lines 82-105): checks for existing `tutor_conversation_id`, creates new `TutorConversation` with `homework_id` and title `"Help with: ${hw.title}"`, links conversation back to homework via `updateMutation`, navigates to `/Tutor?conversationId=...`.
+  - `src/components/homework/HomeworkTable.jsx` — "Get AI Assistance" button (lines 205-215) calls `onOpenTutor(hw)`. "Send Reminder" button (lines 227-237) calls `onSendReminder(hw)`. "Email Teacher" button (lines 238-251) conditionally rendered only when `hw.teacher_email || assignedClass?.teacher_email`, opens `mailto:` link with subject "Question about: [title]".
+- **Acceptance Criteria Verification:**
+  - [x] "Send Reminder" sends HTML email to current user with assignment details — `Assignments.jsx:65-80`
+  - [x] "Email Teacher" opens mailto link (visible only if teacher email on file) — `HomeworkTable.jsx:238-251`
+  - [x] "Get AI Assistance" creates a `TutorConversation` linked via `homework_id` and navigates to `/Tutor?conversationId=...` — `Assignments.jsx:82-105`
+  - [x] Conversation title auto-fills: "Help with: [assignment title]" — `Assignments.jsx:90`
+- **Learnings:**
+  - US-008 was fully implemented in a prior iteration alongside US-006/US-007. The assignment actions (Send Reminder, Email Teacher, Get AI Assistance) were all wired up in both the parent `Assignments.jsx` page and the child `HomeworkTable.jsx` component.
+  - The `SendEmail` integration is a mock (`supabaseClient.js:144-147`) that logs to console and returns success. Real email delivery would require connecting an actual email service.
+  - The `openTutor` function uses a `tutor_conversation_id` FK on the homework record to avoid creating duplicate conversations for the same assignment. If one already exists, it navigates directly.
+  - The Email Teacher button checks both `hw.teacher_email` (direct on homework) and `assignedClass?.teacher_email` (from the linked class record), giving two paths to find a teacher email.
+---
