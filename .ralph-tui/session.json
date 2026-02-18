@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:17:16.304Z",
-  "currentIteration": 5,
+  "updatedAt": "2026-02-18T10:18:57.348Z",
+  "currentIteration": 6,
   "maxIterations": 50,
-  "tasksCompleted": 5,
+  "tasksCompleted": 6,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -47,8 +47,8 @@
       {
         "id": "US-006",
         "title": "Assignment CRUD and List View",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-007",
@@ -210,6 +210,16 @@
       "durationMs": 120806,
       "startedAt": "2026-02-18T10:11:17.644Z",
       "endedAt": "2026-02-18T10:13:18.450Z"
+    },
+    {
+      "iteration": 6,
+      "status": "completed",
+      "taskId": "US-006",
+      "taskTitle": "Assignment CRUD and List View",
+      "taskCompleted": true,
+      "durationMs": 236781,
+      "startedAt": "2026-02-18T10:13:19.521Z",
+      "endedAt": "2026-02-18T10:17:16.302Z"
     }
   ],
   "skippedTaskIds": [],

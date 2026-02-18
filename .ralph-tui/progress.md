@@ -102,3 +102,21 @@ after each iteration and it's included in prompts for context.
   - The expanded row detail section conditionally renders only when at least one field has data, using `(hw.description || hw.notes || hw.teacher_feedback || assignedClass)`.
   - Pre-existing lint errors remain at 22 (was 23, removed one unused `MoreVertical` import). All are unused-import issues in other files.
 ---
+
+## 2026-02-18 - US-007
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — the Assignment Calendar View was fully implemented in a prior iteration.
+- **Files verified** (no changes needed):
+  - `src/components/homework/HomeworkCalendar.jsx` — Full monthly grid using `date-fns` (`startOfMonth`, `endOfMonth`, `eachDayOfInterval`, `startOfWeek`, `endOfWeek`). Status icons (Circle/Clock/CheckCircle2) + priority border colors (rose/amber/blue) on each assignment card. Today highlighted with `ring-2 ring-violet-500` + violet date circle. Prev/next/Today navigation. Click handler calls `onEdit(assignment)`. Assignments without `due_date` filtered out at line 31.
+  - `src/pages/Assignments.jsx` — Tab switching between list/calendar views (lines 142-153). Calendar `onEdit` callback sets `editing` state and opens `HomeworkForm` dialog (lines 190-193). Filtered assignments passed to calendar.
+- **Acceptance Criteria Verification:**
+  - [x] Full monthly grid with assignments on their due dates — `HomeworkCalendar.jsx:69-138` (7-col grid, `getAssignmentsForDay` filters by `isSameDay`)
+  - [x] Status icon + priority color border on each assignment — `HomeworkCalendar.jsx:103-112` (StatusIcon from statusConfig, `border-l-2` with priorityColors)
+  - [x] Today highlighted with violet ring — `HomeworkCalendar.jsx:89,95` (`ring-2 ring-violet-500` on Card, violet circle on date number)
+  - [x] Prev/next month navigation and "Today" button — `HomeworkCalendar.jsx:53-65` (ChevronLeft/Right buttons, Today resets to `new Date()`)
+  - [x] Clicking an assignment opens the edit form — `HomeworkCalendar.jsx:107` → `Assignments.jsx:190-193` (sets editing + showForm → HomeworkForm dialog)
+  - [x] Assignments without due dates are hidden from calendar — `HomeworkCalendar.jsx:31` (`if (!a.due_date) return false`)
+- **Learnings:**
+  - US-007 was fully implemented in a prior iteration alongside the Assignments page. The calendar uses `date-fns` (not `moment`) for all date calculations.
+  - The calendar component receives filtered assignments from the parent, so status filtering from the Assignments page toolbar also applies to the calendar view.
+  - Pre-existing unused imports in HomeworkCalendar (`Badge`) and Assignments (`Select*`, `Filter`) are known lint issues from prior iterations.
+---
