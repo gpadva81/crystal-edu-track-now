@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:50:51.759Z",
-  "currentIteration": 20,
+  "updatedAt": "2026-02-18T10:53:42.182Z",
+  "currentIteration": 21,
   "maxIterations": 50,
-  "tasksCompleted": 20,
+  "tasksCompleted": 21,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -137,8 +137,8 @@
       {
         "id": "US-021",
         "title": "Accept Collaboration Invite",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-022",
@@ -360,6 +360,16 @@
       "durationMs": 96983,
       "startedAt": "2026-02-18T10:47:20.114Z",
       "endedAt": "2026-02-18T10:48:57.097Z"
+    },
+    {
+      "iteration": 21,
+      "status": "completed",
+      "taskId": "US-021",
+      "taskTitle": "Accept Collaboration Invite",
+      "taskCompleted": true,
+      "durationMs": 113589,
+      "startedAt": "2026-02-18T10:48:58.167Z",
+      "endedAt": "2026-02-18T10:50:51.756Z"
     }
   ],
   "skippedTaskIds": [],

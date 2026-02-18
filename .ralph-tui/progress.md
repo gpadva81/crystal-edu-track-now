@@ -392,3 +392,28 @@ after each iteration and it's included in prompts for context.
   - The `accept_parent_invite` RPC is `SECURITY DEFINER`, meaning it runs with elevated privileges to insert into `student_parent` and update `parent_invite` regardless of RLS policies. The function performs its own auth checks via `auth.uid()`.
   - The `ON CONFLICT DO NOTHING` on the junction insert (line 183) is a safety net — the earlier check for existing access (lines 172-178) should prevent duplicates, but the constraint handles any race conditions.
 ---
+
+## 2026-02-18 - US-022
+- **What was implemented**: Admin Settings page was ~99% complete from a prior iteration. The only gap was a missing parent-only access guard at the page component level — the navigation link was gated by `isParent` in `Layout.jsx`, but direct URL access was unprotected. Added an explicit `!isParent` guard in the `Admin` component that renders a "Parent Access Only" message for non-parent accounts. Also removed the unused `useAuth` destructure from the main component to fix lint warnings.
+- **Files changed**:
+  - `src/pages/Admin.jsx` — Added `!isParent` early return with access-denied UI (Shield icon, heading, description). Removed unused `const { user } = useAuth()` from main `Admin` component (still used in child `UserManagementSection`).
+- **Files verified** (no functional changes needed):
+  - `src/pages/Admin.jsx` — Three tabs: API Key (`ApiKeySection`), Linked Users (`UserManagementSection`), Password (`ChangePasswordSection`). API key load via `base44.rpc.getApiKey()`, save via `base44.rpc.updateApiKey()`, masked display with show/hide toggle, remove button. Linked users: fetches `StudentParent` records per student, enriches with profile names, shows student/owner/collaborator badges, remove button only for collaborators (not self, not student user), confirmation dialog. Password change via `base44.auth.changePassword()` (wraps `supabase.auth.updateUser()`), min 6 chars, confirm match.
+  - `src/pages.config.js` — Admin route registered (line 64).
+  - `src/Layout.jsx` — Admin Settings link in user dropdown, gated by `isParent` (lines 152-157).
+  - `src/api/supabaseClient.js` — RPC methods: `getApiKey()` (line 211), `updateApiKey()` (line 217), `removeStudentParent()` (line 225). `changePassword()` at line 130 wraps `supabase.auth.updateUser()`.
+  - `supabase-admin-migration.sql` — `api_key` column on profiles, three RPC functions: `get_api_key()`, `update_api_key()`, `admin_remove_student_parent()` (all SECURITY DEFINER).
+- **Acceptance Criteria Verification:**
+  - [x] Admin page accessible only to parent accounts — `Layout.jsx:152` (nav gate), `Admin.jsx:507-514` (page-level guard)
+  - [x] API key: store/update via `update_api_key` RPC — `Admin.jsx:62-75` (handleSave → `base44.rpc.updateApiKey`)
+  - [x] API key: retrieve masked via `get_api_key` RPC — `Admin.jsx:51-60` (loadKey → `base44.rpc.getApiKey`), mask at line 77-79
+  - [x] Linked users: view all parents per child (owner + collaborators), remove collaborators — `Admin.jsx:162-393` (UserManagementSection with enriched user list, remove via RPC)
+  - [x] Cannot remove self or the student user — `Admin.jsx:340-343` (UI gate: not isStudentUser, not isSelf, role=collaborator, owner check), `supabase-admin-migration.sql` (RPC enforces same)
+  - [x] Password change via `supabase.auth.updateUser()` — `Admin.jsx:428` → `base44.auth.changePassword()` → `supabase.auth.updateUser({ password })`
+  - [x] Removing a collaborator immediately revokes their access — `Admin.jsx:243` (RPC deletes `student_parent` row), `supabase-admin-migration.sql` (DELETE FROM student_parent)
+- **Learnings:**
+  - US-022 was ~99% implemented in a prior iteration. The full Admin Settings page with API key management, linked users, and password change was already functional.
+  - Navigation-level access gates (e.g., hiding a dropdown item with `isParent`) are not sufficient — always add page-level guards for direct URL access. The `isParent` guard pattern with an early return is the right approach.
+  - The `admin_remove_student_parent` RPC is `SECURITY DEFINER` and performs its own authorization: checks that the caller is the student's primary parent (owner), prevents self-removal, and prevents removing non-existent links.
+  - Pre-existing lint issues remain at 18 (unchanged). The 2 lint warnings in Admin.jsx were fixed by removing the unused `user` destructure.
+---
