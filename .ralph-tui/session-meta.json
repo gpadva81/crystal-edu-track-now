@@ -1,14 +1,15 @@
 {
   "id": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
-  "status": "running",
+  "status": "completed",
   "startedAt": "2026-02-18T10:02:06.876Z",
-  "updatedAt": "2026-02-18T10:59:40.501Z",
+  "updatedAt": "2026-02-18T11:03:23.927Z",
   "agentPlugin": "claude",
   "trackerPlugin": "json",
   "prdPath": "./tasks/prd.json",
-  "currentIteration": 23,
+  "currentIteration": 24,
   "maxIterations": 50,
   "totalTasks": 0,
-  "tasksCompleted": 23,
-  "cwd": "/Users/Gabriel_P/Downloads/crystal-edu-track-now"
+  "tasksCompleted": 24,
+  "cwd": "/Users/Gabriel_P/Downloads/crystal-edu-track-now",
+  "endedAt": "2026-02-18T11:03:23.927Z"
 }
