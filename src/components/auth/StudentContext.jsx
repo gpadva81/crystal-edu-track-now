@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { base44 } from "@/api/localClient";
+import { base44 } from "@/api/supabaseClient";
+import { useAuth } from "@/lib/AuthContext";
 
 const StudentContext = createContext();
 
@@ -12,37 +13,36 @@ export const useStudent = () => {
 };
 
 export const StudentProvider = ({ children }) => {
+  const { user } = useAuth();
   const [currentStudent, setCurrentStudent] = useState(null);
-  const [user, setUser] = useState(null);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStudentData();
-  }, []);
+    if (user) {
+      loadStudentData();
+    }
+  }, [user]);
 
   const loadStudentData = async () => {
     try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-
-      if (userData.account_type === "parent") {
+      if (user.account_type === "parent") {
         const parentStudents = await base44.entities.Student.filter({
-          parent_user_id: userData.id,
+          parent_user_id: user.id,
         });
         setStudents(parentStudents);
-        
+
         const savedStudentId = localStorage.getItem("selectedStudentId");
-        const selected = savedStudentId 
+        const selected = savedStudentId
           ? parentStudents.find(s => s.id === savedStudentId) || parentStudents[0]
           : parentStudents[0];
-        
+
         setCurrentStudent(selected);
       } else {
         const studentProfile = await base44.entities.Student.filter({
-          student_user_id: userData.id,
+          student_user_id: user.id,
         });
-        
+
         if (studentProfile.length > 0) {
           setCurrentStudent(studentProfile[0]);
           setStudents(studentProfile);

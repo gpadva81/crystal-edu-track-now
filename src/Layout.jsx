@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "./utils";
 import {
   LayoutDashboard,
@@ -25,7 +25,7 @@ import {
 import { StudentProvider, useStudent } from "./components/auth/StudentContext";
 import StudentSelector from "./components/auth/StudentSelector";
 import SetupFlow from "./components/auth/SetupFlow";
-import { base44 } from "@/api/localClient";
+import { useAuth } from "@/lib/AuthContext";
 
 const NAV_ITEMS = [
   { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
@@ -40,9 +40,12 @@ const NAV_ITEMS = [
 function LayoutContent({ children, currentPageName, user }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { currentStudent, isParent } = useStudent();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    base44.auth.logout(window.location.origin);
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   if (!currentStudent) {
@@ -195,30 +198,9 @@ function LayoutContent({ children, currentPageName, user }) {
 }
 
 export default function Layout({ children, currentPageName }) {
-  const [user, setUser] = useState(null);
-  const [needsSetup, setNeedsSetup] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { user, isAuthenticated, isLoadingAuth, checkAppState } = useAuth();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const userData = await base44.auth.me();
-      setUser(userData);
-      
-      if (!userData.account_type) {
-        setNeedsSetup(true);
-      }
-    } catch (error) {
-      base44.auth.redirectToLogin();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
@@ -226,8 +208,12 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (needsSetup) {
-    return <SetupFlow user={user} onComplete={() => window.location.reload()} />;
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (!user?.account_type) {
+    return <SetupFlow user={user} onComplete={() => checkAppState()} />;
   }
 
   return (

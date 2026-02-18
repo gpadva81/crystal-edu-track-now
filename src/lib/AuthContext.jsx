@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { base44 } from '@/api/localClient';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { supabase } from '@/api/supabaseClient';
 
 const AuthContext = createContext();
 
@@ -11,33 +11,72 @@ export const AuthProvider = ({ children }) => {
   const [authError, setAuthError] = useState(null);
   const [appPublicSettings, setAppPublicSettings] = useState({});
 
-  useEffect(() => {
-    initAuth();
-  }, []);
+  const fetchProfile = useCallback(async (authUser) => {
+    if (!authUser) {
+      setUser(null);
+      setIsAuthenticated(false);
+      return;
+    }
 
-  const initAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
+
+      if (error) throw error;
+
+      setUser({ ...profile, email: authUser.email });
       setIsAuthenticated(true);
     } catch (error) {
-      console.error('Auth init failed:', error);
-    } finally {
-      setIsLoadingAuth(false);
+      console.error('Failed to fetch profile:', error);
+      setAuthError({ type: 'auth_required' });
+      setUser(null);
+      setIsAuthenticated(false);
     }
-  };
+  }, []);
 
-  const logout = (shouldRedirect = true) => {
+  useEffect(() => {
+    // Get the current session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        fetchProfile(session.user).finally(() => setIsLoadingAuth(false));
+      } else {
+        setIsLoadingAuth(false);
+      }
+    });
+
+    // Listen for auth state changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          fetchProfile(session.user);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [fetchProfile]);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem("studytrack_user");
-    if (shouldRedirect) {
-      window.location.reload();
-    }
   };
 
   const navigateToLogin = () => {
-    // No-op in local mode — auto-authenticated
+    window.location.href = '/login';
+  };
+
+  const checkAppState = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      await fetchProfile(session.user);
+    }
   };
 
   return (
@@ -50,7 +89,7 @@ export const AuthProvider = ({ children }) => {
       appPublicSettings,
       logout,
       navigateToLogin,
-      checkAppState: initAuth
+      checkAppState,
     }}>
       {children}
     </AuthContext.Provider>

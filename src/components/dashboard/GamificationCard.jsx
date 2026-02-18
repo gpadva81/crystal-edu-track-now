@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Flame, Target, Zap, Star, Gift } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/localClient";
+import { base44 } from "@/api/supabaseClient";
 import { useStudent } from "../auth/StudentContext";
 import moment from "moment";
 

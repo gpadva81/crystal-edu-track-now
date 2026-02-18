@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BookOpen, MoreVertical, Pencil, Trash2, Mail, Phone } from "lucide-react";
-import { base44 } from "@/api/localClient";
+import { base44 } from "@/api/supabaseClient";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../../utils";
