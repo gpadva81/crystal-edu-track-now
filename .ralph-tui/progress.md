@@ -253,3 +253,20 @@ after each iteration and it's included in prompts for context.
   - The drag-and-drop zone uses direct DOM class manipulation (`classList.add/remove`) for hover styling rather than React state — a pragmatic choice for visual-only feedback.
   - Class color assignment during auto-creation uses random selection from 5 colors, consistent with the pattern in `SetupFlow.jsx` for student avatar colors.
 ---
+
+## 2026-02-18 - US-015
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Gamification Points, Levels, and Streaks were fully implemented in a prior iteration alongside the Dashboard (US-004).
+- **Files verified** (no changes needed):
+  - `src/components/dashboard/GamificationCard.jsx` — Points: `completed.length * 10` (line 57). Level: `Math.floor(points / 100) + 1` (line 58). Streak: `calculateStreak()` (lines 34-54) walks backwards from today checking `updated_date`, caps at 30 (`while (streak < 30)`), gracefully skips today if no completions yet. All values computed from `assignments` prop (not cached). Badges grid with 4 achievements (Beginner/Dedicated/On Fire/Champion) with auto-unlock via Achievement entity.
+  - `src/pages/Dashboard.jsx` — GamificationCard rendered at line 93 in a 2-col grid alongside CompletionChart, receiving `assignments` prop.
+- **Acceptance Criteria Verification:**
+  - [x] 10 points per completed assignment — `GamificationCard.jsx:57` (`completed.length * 10`)
+  - [x] Level = `floor(points / 100) + 1` — `GamificationCard.jsx:58` (`Math.floor(points / 100) + 1`)
+  - [x] Streak: consecutive days with at least one completion, max display 30 days — `GamificationCard.jsx:34-54` (`calculateStreak()`, `while (streak < 30)`)
+  - [x] All values recalculated from assignment data (not cached) — Points, level, streak all computed from `assignments` prop on every render
+  - [x] Displayed on Dashboard GamificationCard — `Dashboard.jsx:93`
+- **Learnings:**
+  - US-015 was fully implemented as part of the Dashboard feature (US-004) in a prior iteration. All five acceptance criteria pass without any changes.
+  - The streak calculation has a nice UX touch: if today has no completions yet, it starts counting from yesterday. This prevents the streak from resetting mid-day before the student has done any work.
+  - The GamificationCard also fetches `Achievement` records separately (not from the `assignments` prop) for the badge unlock system. Achievement unlocks are persisted to the database via mutation.
+---
