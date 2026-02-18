@@ -3,6 +3,16 @@ import { base44 } from "@/api/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Plus, BookOpen, FileSpreadsheet, Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useStudent } from "../components/auth/StudentContext";
 import { toast } from "sonner";
 
@@ -14,6 +24,7 @@ export default function Classes() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [importing, setImporting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: classes = [] } = useQuery({
@@ -47,7 +58,11 @@ export default function Classes() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Class.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["classes", currentStudent?.id] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["classes", currentStudent?.id] });
+      queryClient.invalidateQueries({ queryKey: ["homework", currentStudent?.id] });
+      setDeleteTarget(null);
+    },
   });
 
   const getHomeworkCount = (classId) => {
@@ -164,7 +179,7 @@ export default function Classes() {
                 setEditing(c);
                 setShowForm(true);
               }}
-              onDelete={(id) => deleteMutation.mutate(id)}
+              onDelete={(id) => setDeleteTarget(classes.find(c => c.id === id) || { id })}
             />
           ))}
         </div>
@@ -182,6 +197,26 @@ export default function Classes() {
           }
         }}
       />
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteTarget?.name || "class"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this class. Linked assignments will keep their data but will no longer be associated with this class. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteMutation.mutate(deleteTarget.id)}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

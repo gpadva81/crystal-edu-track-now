@@ -137,3 +137,22 @@ after each iteration and it's included in prompts for context.
   - The `openTutor` function uses a `tutor_conversation_id` FK on the homework record to avoid creating duplicate conversations for the same assignment. If one already exists, it navigates directly.
   - The Email Teacher button checks both `hw.teacher_email` (direct on homework) and `assignedClass?.teacher_email` (from the linked class record), giving two paths to find a teacher email.
 ---
+
+## 2026-02-18 - US-009
+- **What was implemented**: Class Management was ~95% complete from prior iterations. Two gaps were found and fixed:
+  1. **Delete confirmation dialog**: Added AlertDialog confirmation before class deletion (consistent with US-006 pattern). Shows class name and explains that linked assignments will be unlinked but not deleted.
+  2. **Homework cache invalidation**: After class deletion, now invalidates both `classes` and `homework` React Query caches so the UI reflects the nullified `class_id` on linked assignments.
+- **Files changed**:
+  - `src/pages/Classes.jsx` — Added `AlertDialog` imports, `deleteTarget` state, changed `onDelete` to set `deleteTarget` instead of direct mutation, added AlertDialog component with confirmation prompt, added homework query invalidation in `deleteMutation.onSuccess`.
+- **Acceptance Criteria Verification:**
+  - [x] Class grid with color-coded cards showing name, schedule, grade, teacher info — `ClassCard.jsx:38-138` (6 color variants, schedule/grade in header, teacher section in body)
+  - [x] Contact buttons (email/call) when teacher info available — `ClassCard.jsx:100-128` (Email button with `mailto:`, Call button with `tel:`, both conditionally rendered)
+  - [x] Create/edit dialog: name, subject, color (6 presets), teacher name/email/phone, room, schedule, grade — `ClassForm.jsx:19-26` (COLORS array), form fields at lines 83-191
+  - [x] "Import from Homework" auto-generates classes from unique subjects — `Classes.jsx:57-108` (extracts unique subjects, deduplicates against existing classes, bulk creates, links homework)
+  - [x] Deleting a class nullifies `class_id` on linked assignments — DB schema `ON DELETE SET NULL` (`supabase-fix-schema.sql:77`), AlertDialog confirmation (`Classes.jsx:189-210`), homework cache invalidation
+  - [x] Classes scoped to selected student — `Classes.jsx:19-23` (filter by `currentStudent.id`, React Query key includes student ID)
+- **Learnings:**
+  - The `ON DELETE SET NULL` FK constraint on `homework.class_id` handles the data nullification at the database level. The client-side fix was only needed for cache invalidation so the UI immediately reflects the change.
+  - The AlertDialog confirmation pattern (using a state variable as both open trigger and data source) was established in US-006 and reused here consistently.
+  - Pre-existing unused imports: `base44` in `ClassCard.jsx` and `error` catch variable in `Classes.jsx` importFromHomework. Not addressed as they're pre-existing.
+---
