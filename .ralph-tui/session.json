@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:48:57.100Z",
-  "currentIteration": 19,
+  "updatedAt": "2026-02-18T10:50:51.759Z",
+  "currentIteration": 20,
   "maxIterations": 50,
-  "tasksCompleted": 19,
+  "tasksCompleted": 20,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -131,8 +131,8 @@
       {
         "id": "US-020",
         "title": "Parent Collaboration Invites",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-021",
@@ -350,6 +350,16 @@
       "durationMs": 144536,
       "startedAt": "2026-02-18T10:44:54.509Z",
       "endedAt": "2026-02-18T10:47:19.045Z"
+    },
+    {
+      "iteration": 20,
+      "status": "completed",
+      "taskId": "US-020",
+      "taskTitle": "Parent Collaboration Invites",
+      "taskCompleted": true,
+      "durationMs": 96983,
+      "startedAt": "2026-02-18T10:47:20.114Z",
+      "endedAt": "2026-02-18T10:48:57.097Z"
     }
   ],
   "skippedTaskIds": [],

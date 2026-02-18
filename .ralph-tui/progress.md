@@ -370,3 +370,25 @@ after each iteration and it's included in prompts for context.
   - The `InviteParentDialog` uses a simple state pattern: `invites` array is loaded on open, updated optimistically on generate/revoke. No React Query needed since this is a dialog with infrequent access.
   - The `copiedToken` state with `setTimeout` clear is an effective pattern for copy-to-clipboard feedback — avoids needing a separate boolean per invite.
 ---
+
+## 2026-02-18 - US-021
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Accept Collaboration Invite was fully implemented in a prior iteration alongside the multi-parent collaboration system (US-020).
+- **Files verified** (no changes needed):
+  - `src/pages/AcceptInvite.jsx` — Full page component: extracts token from URL params (line 11), saves `pendingInvite` to localStorage when unauthenticated (lines 27-32), `handleAccept()` calls `base44.rpc.acceptParentInvite(token)` (line 38), success state with redirect to dashboard after 2s (lines 39-43, 89-98), error state showing error message + dashboard link (lines 99-110), unauthenticated state with Sign In/Create Account links (lines 70-88).
+  - `src/App.jsx` — `/accept-invite` registered as public route (line 83), accessible before authentication.
+  - `src/lib/AuthContext.jsx` — `pendingInvite` localStorage check in `fetchProfile()` (lines 33-38): reads pending invite URL, removes from storage, redirects via `window.location.href`.
+  - `supabase-multi-parent-migration.sql` — `accept_parent_invite()` RPC function (lines 141-195): validates auth, finds invite by token, checks status='pending', checks not expired, prevents self-invite, prevents duplicate access, inserts `student_parent` with role='collaborator', updates invite status to 'accepted'.
+  - `src/api/supabaseClient.js` — `acceptParentInvite()` RPC wrapper (lines 203-209).
+- **Acceptance Criteria Verification:**
+  - [x] Visiting invite link saves token to localStorage if not authenticated — `AcceptInvite.jsx:27-32`
+  - [x] After login/register, auto-redirects to accept — `AuthContext.jsx:33-38` (pendingInvite redirect in fetchProfile)
+  - [x] Supabase RPC validates: not expired, not revoked, not self-invite, no existing access — `migration.sql:147-183`
+  - [x] Inserts `student_parent` record with `role: 'collaborator'` — `migration.sql:181-183`
+  - [x] Expired/revoked tokens show clear error messages — RPC raises descriptive exceptions, rendered in `AcceptInvite.jsx:99-110`
+  - [x] Collaborators see same student data as owner — RLS policies throughout migration check `student_parent` junction table
+- **Learnings:**
+  - US-021 was fully implemented in a prior iteration as part of the multi-parent collaboration system alongside US-020. All six acceptance criteria pass without any changes.
+  - The `pendingInvite` redirect uses `window.location.href` (full page reload) rather than React Router navigation. This is intentional — it ensures the AcceptInvite page re-mounts with fresh auth state after login/register.
+  - The `accept_parent_invite` RPC is `SECURITY DEFINER`, meaning it runs with elevated privileges to insert into `student_parent` and update `parent_invite` regardless of RLS policies. The function performs its own auth checks via `auth.uid()`.
+  - The `ON CONFLICT DO NOTHING` on the junction insert (line 183) is a safety net — the earlier check for existing access (lines 172-178) should prevent duplicates, but the constraint handles any race conditions.
+---
