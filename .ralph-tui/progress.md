@@ -63,3 +63,21 @@ after each iteration and it's included in prompts for context.
   - GamificationCard fetches its own Achievement records via a separate query (not passed as props), while assignments are passed down from Dashboard.
   - The `moment` library is used throughout for date manipulation (not date-fns or native).
 ---
+
+## 2026-02-18 - US-005
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — the parent student switching feature was fully implemented in prior commits.
+- **Files verified** (no changes needed):
+  - `src/components/auth/StudentContext.jsx` — `StudentProvider` fetches owned students (via `parent_user_id` FK) AND shared students (via `StudentParent` junction table), deduplicates, persists selection to localStorage (`selectedStudentId`), provides `switchStudent()` to change current student.
+  - `src/components/auth/StudentSelector.jsx` — Dropdown menu that only renders when `isParent && students.length > 1`. Shows avatar + name in trigger, lists all students with grade/school in dropdown. Calls `switchStudent(student.id)` on selection.
+  - `src/Layout.jsx` — Wraps authenticated layout in `<StudentProvider>`. Places `<StudentSelector />` in header nav bar (line 113).
+  - `src/pages/Dashboard.jsx` — Uses `useStudent()` to get `currentStudent`, queries homework with `currentStudent.id` as React Query key, so switching students triggers immediate refetch.
+- **Acceptance Criteria Verification:**
+  - [x] Student selector dropdown in header (visible only for parents with 2+ children) — `StudentSelector.jsx:23`
+  - [x] Switching students updates all dashboard data immediately — React Query key includes `currentStudent?.id`
+  - [x] Selected student persisted to localStorage — `StudentContext.jsx:53,80`
+  - [x] Parents see owned AND shared students merged and deduplicated — `StudentContext.jsx:31-50`
+- **Learnings:**
+  - US-005 was fully implemented in a prior iteration alongside the collaboration/invite system.
+  - The `useStudent()` hook is the single source of truth for student context across the app. All data-fetching components use `currentStudent.id` in their query keys for automatic refetch on switch.
+  - Pre-existing unused import `User` in `StudentSelector.jsx` (known lint issue, not from current work).
+---
