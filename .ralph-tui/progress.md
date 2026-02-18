@@ -217,3 +217,20 @@ after each iteration and it's included in prompts for context.
   - The `preferred_explanation_style` is the only field that overwrites rather than appends — this is intentional since it represents the student's current preference, not a history.
   - Pre-existing lint errors remain at 22. No new lint issues introduced.
 ---
+
+## 2026-02-18 - US-013
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Tutor File Attachments were fully implemented in a prior iteration alongside US-011 (AI Tutor Chat).
+- **Files verified** (no changes needed):
+  - `src/components/tutor/TutorChat.jsx` — File upload button with Paperclip icon (lines 604-617), hidden file input accepting `image/*,.pdf` (lines 596-603), `handleFileUpload()` using `base44.integrations.Core.UploadFile` (lines 57-74), uploaded file chips with name/icon/remove button (lines 570-588), `file_urls` passed to `InvokeLLM` (line 283), files cleared after send (line 380).
+- **Acceptance Criteria Verification:**
+  - [x] File upload button in chat input area — `TutorChat.jsx:604-617` (Paperclip icon Button)
+  - [x] Accepted types: images (PNG/JPG) and PDFs — `TutorChat.jsx:600` (`accept="image/*,.pdf"`)
+  - [x] Uploaded files display as chips in the input area before sending — `TutorChat.jsx:570-588` (violet chips with ImageIcon, truncated name, X remove)
+  - [x] Files sent to AI as `file_urls` for multimodal analysis — `TutorChat.jsx:283` (`file_urls: uploadedFiles.map(f => f.url)`)
+  - [x] Files uploaded via `UploadFile` integration — `TutorChat.jsx:65` (`base44.integrations.Core.UploadFile({ file })`)
+- **Learnings:**
+  - US-013 was fully implemented as part of the US-011 tutor chat feature in a prior iteration. The file upload system was built alongside the chat UI from the start.
+  - The `UploadFile` integration is mocked in `supabaseClient.js` — it creates object URLs for local files. Production would use Supabase Storage buckets.
+  - File chips use a flex-wrap layout above the input form, with each chip showing an ImageIcon (regardless of file type), a truncated filename (max 150px), and an X close button.
+  - Files are cleared from state after message send (`setUploadedFiles([])` at line 380), preventing accidental re-sends.
+---
