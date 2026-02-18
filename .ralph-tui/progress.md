@@ -306,3 +306,25 @@ after each iteration and it's included in prompts for context.
   - The `GamificationCard` on the Dashboard also displays reward info (gift icon + truncated text) for unlocked badges, providing reward visibility outside the dedicated Rewards page.
   - Pre-existing unused `Badge` import in `GamificationCard.jsx` remains (known lint issue, not from current work).
 ---
+
+## 2026-02-18 - US-018
+- **What was implemented**: Verified all acceptance criteria already met. The Reminders page was fully implemented in a prior iteration. Only cleanup: removed 2 unused imports (`Badge`, `AnimatePresence`) from `Reminders.jsx`.
+- **Files changed**:
+  - `src/pages/Reminders.jsx` — Removed unused `Badge` and `AnimatePresence` imports (lint cleanup only).
+- **Files verified** (no functional changes needed):
+  - `src/pages/Reminders.jsx` — Overdue section filters `status !== "completed" && due_date before now` (lines 41-44). Upcoming section filters `status !== "completed" && due_date within 72 hours` (lines 32-39). Per-assignment "Remind" button in `ReminderCard` (lines 142-157). "Email All" button sends digest email combining overdue+upcoming (lines 71-101). HTML-formatted emails with title, subject, due date, description (lines 52-65 for individual, 77-86 for digest). Emails sent to `user.email` via `base44.auth.me()` (lines 48, 73). Success toasts after send (lines 68, 100).
+  - `src/pages.config.js` — Route registered at line 71.
+  - `src/Layout.jsx` — Nav link at line 39.
+- **Acceptance Criteria Verification:**
+  - [x] Reminders page groups: Overdue (past due, not completed) and Upcoming (within 72 hours) — `Reminders.jsx:32-44,187-229`
+  - [x] Per-assignment "Send Reminder" button — `Reminders.jsx:142-157` (ReminderCard with Remind button)
+  - [x] "Email All" sends single summary digest email — `Reminders.jsx:71-101` (sendAllReminders)
+  - [x] HTML-formatted email with title, subject, due date, description — `Reminders.jsx:52-65` (individual), `77-86` (digest)
+  - [x] Sent to current user's email — `Reminders.jsx:48-49,73` (base44.auth.me() → user.email)
+  - [x] Success/error toast after send — `Reminders.jsx:68,100` (toast.success)
+- **Learnings:**
+  - US-018 was fully implemented in a prior iteration. All six acceptance criteria pass without functional changes.
+  - The `sendReminder` function follows the same pattern as in `Assignments.jsx:65-80` — fetch user email via `base44.auth.me()`, send via `SendEmail` mock integration.
+  - The `sendAllReminders` function combines overdue+upcoming into a single digest with color-coded status labels (red for overdue, amber for upcoming).
+  - Pre-existing unused imports (`Badge`, `AnimatePresence`) were cleaned up since this is the target file for US-018.
+---

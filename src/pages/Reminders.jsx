@@ -3,7 +3,6 @@ import { base44 } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Bell,
   Mail,
@@ -14,7 +13,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import moment from "moment";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useStudent } from "../components/auth/StudentContext";
 

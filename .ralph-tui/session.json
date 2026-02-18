@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:43:42.526Z",
-  "currentIteration": 16,
+  "updatedAt": "2026-02-18T10:44:53.441Z",
+  "currentIteration": 17,
   "maxIterations": 50,
-  "tasksCompleted": 16,
+  "tasksCompleted": 17,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -113,8 +113,8 @@
       {
         "id": "US-017",
         "title": "Parent Achievement Rewards",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-018",
@@ -320,6 +320,16 @@
       "durationMs": 101773,
       "startedAt": "2026-02-18T10:40:53.726Z",
       "endedAt": "2026-02-18T10:42:35.499Z"
+    },
+    {
+      "iteration": 17,
+      "status": "completed",
+      "taskId": "US-017",
+      "taskTitle": "Parent Achievement Rewards",
+      "taskCompleted": true,
+      "durationMs": 65944,
+      "startedAt": "2026-02-18T10:42:36.580Z",
+      "endedAt": "2026-02-18T10:43:42.524Z"
     }
   ],
   "skippedTaskIds": [],
