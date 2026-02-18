@@ -195,3 +195,25 @@ after each iteration and it's included in prompts for context.
   - The `TutorChat` component has a rich context system: it loads `StudentLearningProfile` (shared across tutors) and recent conversation summaries on mount, then includes both in the AI prompt along with the last 10 messages.
   - The `formatTimestamp` helper shows time-only for today's messages and date+time for older ones — consistent with chat UX conventions.
 ---
+
+## 2026-02-18 - US-012
+- **What was implemented**: The Tutor Learning Profile was ~90% complete from prior iterations. Two gaps were found and fixed:
+  1. **Schema fix**: `common_misconceptions` column in `supabase-fix-schema.sql` was `text` but TutorChat treats it as an array — changed to `text[] default '{}'`.
+  2. **Expanded profile_updates**: The AI response schema only covered 4 of 7 profile fields. Added `misconception`, `preferred_style`, and `motivation_note` to the `profile_updates` JSON schema, and corresponding non-destructive update logic in `sendMessage()`.
+  3. **Non-destructive handoff notes**: Changed `tutor_handoff_notes` update from overwrite to append (concatenation with `|` separator), consistent with all other string fields.
+  4. **Enhanced AI prompt**: Added explicit instructions listing all 7 profile_updates fields so the AI knows what to observe and report.
+- **Files changed**:
+  - `src/components/tutor/TutorChat.jsx` — Expanded `profile_updates` response schema (added `misconception`, `preferred_style`, `motivation_note` fields with descriptions). Enhanced update logic to handle all 7 profile fields non-destructively. Updated AI prompt with explicit profile update instructions.
+  - `supabase-fix-schema.sql` — Changed `common_misconceptions` from `text` to `text[] default '{}'` to match app code expectations.
+- **Acceptance Criteria Verification:**
+  - [x] One `student_learning_profile` per student, shared across all conversations — `student_id unique` constraint in schema; `TutorChat.jsx:101-103` filters by `student_id`
+  - [x] Auto-created on first tutor session — `TutorChat.jsx:105-116` creates profile if none exists in `loadStudentContext()`
+  - [x] AI responses include `profile_updates` — `TutorChat.jsx:286-301` (JSON schema with 7 update fields: `learning_insight`, `strength_observed`, `area_to_work_on`, `misconception`, `preferred_style`, `motivation_note`, `handoff_note`)
+  - [x] Updates are non-destructive (append to arrays, concatenate strings) — `TutorChat.jsx:313-360` (arrays use spread + append, strings use `|` concatenation, `preferred_explanation_style` replaces as it's a preference not history)
+  - [x] Profile fields: `learning_style_notes`, `strengths[]`, `areas_for_growth[]`, `preferred_explanation_style`, `common_misconceptions[]`, `motivation_factors`, `tutor_handoff_notes` — All 7 fields defined in schema (`supabase-fix-schema.sql:196-202`), created in profile init (`TutorChat.jsx:108-114`), included in AI context (`TutorChat.jsx:221-247`), and updated from AI responses (`TutorChat.jsx:313-360`)
+- **Learnings:**
+  - US-012 was ~90% implemented in a prior iteration alongside US-011. The core profile load/create/update/context cycle was already functional.
+  - The `common_misconceptions` field had a schema type mismatch (`text` vs `text[]`) that would have caused Supabase to reject array inserts at runtime. Always verify SQL column types match the app's data shapes.
+  - The `preferred_explanation_style` is the only field that overwrites rather than appends — this is intentional since it represents the student's current preference, not a history.
+  - Pre-existing lint errors remain at 22. No new lint issues introduced.
+---

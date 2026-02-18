@@ -272,7 +272,14 @@ CRITICAL - YOUR TEACHING PHILOSOPHY:
 
 Guide them with questions, not answers.
 
-As you interact, if you notice insights about their learning style, update the profile_updates field.`,
+PROFILE UPDATES: As you interact, include profile_updates when you notice something new about the student:
+- learning_insight: how they learn best
+- strength_observed: a strength they showed
+- area_to_work_on: where they need help
+- misconception: a misunderstanding they revealed
+- preferred_style: how they prefer explanations
+- motivation_note: what engages them
+- handoff_note: what the next tutor should know`,
       file_urls: uploadedFiles.length > 0 ? uploadedFiles.map(f => f.url) : undefined,
       response_json_schema: {
         type: "object",
@@ -287,10 +294,13 @@ As you interact, if you notice insights about their learning style, update the p
             type: "object",
             description: "Updates to share with other tutors about this student (only include if you noticed something new)",
             properties: {
-              learning_insight: { type: "string" },
-              strength_observed: { type: "string" },
-              area_to_work_on: { type: "string" },
-              handoff_note: { type: "string" }
+              learning_insight: { type: "string", description: "Observation about how the student learns best" },
+              strength_observed: { type: "string", description: "A strength the student demonstrated" },
+              area_to_work_on: { type: "string", description: "An area where the student needs improvement" },
+              misconception: { type: "string", description: "A common misconception the student has shown" },
+              preferred_style: { type: "string", description: "How the student prefers explanations (e.g., visual, step-by-step, analogies)" },
+              motivation_note: { type: "string", description: "What motivates or engages this student" },
+              handoff_note: { type: "string", description: "Note for other tutors about this session" }
             }
           }
         }
@@ -305,32 +315,51 @@ As you interact, if you notice insights about their learning style, update the p
 
     setSuggestions(response.suggestions || []);
 
-    // Update learning profile if tutor noticed something new
+    // Update learning profile if tutor noticed something new (non-destructive: append arrays, concatenate strings)
     if (response.profile_updates && learningProfile) {
       const updates = {};
-      
+
       if (response.profile_updates.learning_insight) {
         updates.learning_style_notes = learningProfile.learning_style_notes
           ? `${learningProfile.learning_style_notes} | ${response.profile_updates.learning_insight}`
           : response.profile_updates.learning_insight;
       }
-      
+
       if (response.profile_updates.strength_observed) {
         updates.strengths = [
           ...(learningProfile.strengths || []),
           response.profile_updates.strength_observed,
         ];
       }
-      
+
       if (response.profile_updates.area_to_work_on) {
         updates.areas_for_growth = [
           ...(learningProfile.areas_for_growth || []),
           response.profile_updates.area_to_work_on,
         ];
       }
-      
+
+      if (response.profile_updates.misconception) {
+        updates.common_misconceptions = [
+          ...(learningProfile.common_misconceptions || []),
+          response.profile_updates.misconception,
+        ];
+      }
+
+      if (response.profile_updates.preferred_style) {
+        updates.preferred_explanation_style = response.profile_updates.preferred_style;
+      }
+
+      if (response.profile_updates.motivation_note) {
+        updates.motivation_factors = learningProfile.motivation_factors
+          ? `${learningProfile.motivation_factors} | ${response.profile_updates.motivation_note}`
+          : response.profile_updates.motivation_note;
+      }
+
       if (response.profile_updates.handoff_note) {
-        updates.tutor_handoff_notes = `[${tutor.name}]: ${response.profile_updates.handoff_note}`;
+        updates.tutor_handoff_notes = learningProfile.tutor_handoff_notes
+          ? `${learningProfile.tutor_handoff_notes} | [${tutor.name}]: ${response.profile_updates.handoff_note}`
+          : `[${tutor.name}]: ${response.profile_updates.handoff_note}`;
       }
 
       if (Object.keys(updates).length > 0) {
