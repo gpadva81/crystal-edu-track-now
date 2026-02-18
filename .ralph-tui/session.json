@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:09:21.775Z",
-  "currentIteration": 2,
+  "updatedAt": "2026-02-18T10:11:16.567Z",
+  "currentIteration": 3,
   "maxIterations": 50,
-  "tasksCompleted": 2,
+  "tasksCompleted": 3,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -29,8 +29,8 @@
       {
         "id": "US-003",
         "title": "Account Setup Flow",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-004",
@@ -180,6 +180,16 @@
       "durationMs": 92057,
       "startedAt": "2026-02-18T10:06:01.466Z",
       "endedAt": "2026-02-18T10:07:33.523Z"
+    },
+    {
+      "iteration": 3,
+      "status": "completed",
+      "taskId": "US-003",
+      "taskTitle": "Account Setup Flow",
+      "taskCompleted": true,
+      "durationMs": 107184,
+      "startedAt": "2026-02-18T10:07:34.589Z",
+      "endedAt": "2026-02-18T10:09:21.773Z"
     }
   ],
   "skippedTaskIds": [],

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/supabaseClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, BookOpen, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Plus, BookOpen, Clock, CheckCircle2, TrendingUp } from "lucide-react";
 import moment from "moment";
 import { useStudent } from "../components/auth/StudentContext";
 
@@ -36,14 +36,10 @@ export default function Dashboard() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["homework", currentStudent?.id] }),
   });
 
-  const active = assignments.filter((a) => a.status !== "completed");
-  const overdue = active.filter((a) => moment(a.due_date).isBefore(moment()));
+  const total = assignments.length;
   const completed = assignments.filter((a) => a.status === "completed");
-  const dueToday = active.filter((a) => moment(a.due_date).isSame(moment(), "day"));
-
-  const upcoming = active
-    .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
-    .slice(0, 6);
+  const inProgress = assignments.filter((a) => a.status === "in_progress");
+  const completionPct = total > 0 ? Math.round((completed.length / total) * 100) : 0;
 
   return (
     <div className="space-y-8">
@@ -65,17 +61,11 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          title="Active"
-          value={active.length}
+          title="Total"
+          value={total}
           icon={BookOpen}
           color="violet"
-          subtitle={`${dueToday.length} due today`}
-        />
-        <StatsCard
-          title="Overdue"
-          value={overdue.length}
-          icon={AlertTriangle}
-          color="red"
+          subtitle="All assignments"
         />
         <StatsCard
           title="Completed"
@@ -84,11 +74,17 @@ export default function Dashboard() {
           color="green"
         />
         <StatsCard
-          title="Due Soon"
-          value={dueToday.length}
+          title="In Progress"
+          value={inProgress.length}
           icon={Clock}
           color="blue"
-          subtitle="Today"
+        />
+        <StatsCard
+          title="Completion"
+          value={`${completionPct}%`}
+          icon={TrendingUp}
+          color="purple"
+          subtitle={`${completed.length} of ${total}`}
         />
       </div>
 

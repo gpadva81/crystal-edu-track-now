@@ -46,3 +46,20 @@ after each iteration and it's included in prompts for context.
   - Parent child cards use random avatar colors from a fixed set of 5 (`blue`, `green`, `purple`, `orange`, `pink`). Student accounts always get `blue`.
   - The `base44.auth.updateMe()` call updates the `profiles` table, and `checkAppState()` in AuthContext re-fetches the profile to pick up the new `account_type`.
 ---
+
+## 2026-02-18 - US-004
+- **What was implemented**: The Student Dashboard was mostly already built in prior iterations. The only change needed was updating the stats cards to match the acceptance criteria: replaced Active/Overdue/Completed/Due Soon with Total/Completed/In Progress/Completion %.
+- **Files changed**:
+  - `src/pages/Dashboard.jsx` — Updated stats cards section: replaced `AlertTriangle` import with `TrendingUp`, changed computed values from `active/overdue/completed/dueToday/upcoming` to `total/completed/inProgress/completionPct`, updated 4 StatsCard instances to show Total Assignments, Completed, In Progress, and Completion Percentage.
+- **Files verified** (no changes needed):
+  - `src/components/dashboard/CompletionChart.jsx` — SVG donut chart with linear progress bars per status (completed, in_progress, todo). Already meets AC2.
+  - `src/components/dashboard/GamificationCard.jsx` — Points (10 per completed), level (floor(points/100)+1), streak (consecutive days, max 30), badge grid (4 badges: Beginner/Dedicated/On Fire/Champion). Already meets AC3.
+  - `src/components/dashboard/WeeklyCalendar.jsx` — 7-day grid with status icons (Circle/Clock/CheckCircle2), priority borders (rose/amber/blue), dropdown status change. Already meets AC4.
+  - `src/components/dashboard/StatsCard.jsx` — Reusable stats card with icon, color, value, subtitle.
+  - `src/components/homework/HomeworkForm.jsx` — Dialog form for creating assignments. Already meets AC5.
+- **Learnings:**
+  - The dashboard was ~95% complete from prior iterations. Only the stats card labels/values didn't match the PRD acceptance criteria.
+  - Data scoping to selected student is handled via `useStudent()` context + `student_id` filter in the query. This pattern is consistent across all data-fetching components.
+  - GamificationCard fetches its own Achievement records via a separate query (not passed as props), while assignments are passed down from Dashboard.
+  - The `moment` library is used throughout for date manipulation (not date-fns or native).
+---
