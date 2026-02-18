@@ -447,3 +447,23 @@ after each iteration and it's included in prompts for context.
   - Dialog/AlertDialog/Sheet overlays should use `bg-black/40 backdrop-blur-md` (not `bg-black/80`) to maintain the frosted glass aesthetic.
   - All 14 pre-existing lint errors are unchanged (unused imports across 8 files). No new lint issues introduced.
 ---
+
+## 2026-02-18 - US-024
+- **What was implemented**: The responsive navigation was ~85% complete from prior iterations. The sticky glass-nav header, desktop nav links, user dropdown, student selector, and active violet highlighting were all already functional. Two improvements were made:
+  1. **Mobile sidebar**: Converted the mobile navigation from a top-down dropdown panel to a proper sidebar that slides in from the left. Uses `bg-white/70 backdrop-blur-xl` with `border-r border-white/30` for glassmorphism, `animate-in slide-in-from-left` for entrance animation. Includes logo, close button, all nav items, Admin Settings (parent-only), and user info section at bottom with logout.
+  2. **Mobile user info**: Added user avatar, name, account type label, and logout button to the sidebar bottom section. Previously, mobile users only had a bare logout icon in the header with no access to their profile info or Admin Settings.
+  3. **Cleanup**: Removed the standalone mobile logout icon button from the header since it's now in the sidebar.
+- **Files changed**:
+  - `src/Layout.jsx` — Replaced mobile nav panel (top-down `glass-panel`) with sidebar (`<aside>` element sliding from left). Added sidebar header with logo + close button, nav section with all items + Admin Settings link, and user section with avatar/name/account type/logout. Removed standalone mobile logout button.
+- **Acceptance Criteria Verification:**
+  - [x] Sticky glass-nav header with logo, desktop nav links, user dropdown — `Layout.jsx:66` (sticky glass-nav), `:79-88` (logo), `:92-110` (desktop nav), `:127-163` (user dropdown)
+  - [x] Mobile: hamburger icon opens glass-panel sidebar with all nav items — `Layout.jsx:69-78` (hamburger toggle), `:168-252` (sidebar with glass styling, all nav items + Admin Settings)
+  - [x] Student selector visible in header for parents — `Layout.jsx:113` (`<StudentSelector />`)
+  - [x] Active nav item highlighted with violet accent — `Layout.jsx:100-102` (desktop: `bg-violet-500/10 text-violet-700`), `:201-204` (mobile: same + `shadow-sm`)
+  - [x] User dropdown: account type label, admin settings shortcut (parent), logout — `Layout.jsx:134-137` (account type), `:152-157` (admin settings), `:158-161` (logout)
+- **Learnings:**
+  - The `tailwindcss-animate` plugin provides `animate-in slide-in-from-left duration-200` classes for sidebar entrance animations — no custom CSS needed.
+  - Mobile sidebar overlay uses `bg-black/40 backdrop-blur-md` consistent with the glassmorphism overlay pattern established in US-023.
+  - The mobile sidebar duplicates the logo and user info from the header — this is intentional since on mobile, the header user dropdown is hidden (`hidden sm:flex`) and the sidebar provides the full navigation context.
+  - No new lint issues introduced. Build succeeds cleanly.
+---
