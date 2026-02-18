@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:06:00.401Z",
-  "currentIteration": 0,
+  "updatedAt": "2026-02-18T10:07:33.525Z",
+  "currentIteration": 1,
   "maxIterations": 50,
-  "tasksCompleted": 0,
+  "tasksCompleted": 1,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -17,8 +17,8 @@
       {
         "id": "US-001",
         "title": "User Registration",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-002",
@@ -160,7 +160,18 @@
       }
     ]
   },
-  "iterations": [],
+  "iterations": [
+    {
+      "iteration": 1,
+      "status": "completed",
+      "taskId": "US-001",
+      "taskTitle": "User Registration",
+      "taskCompleted": true,
+      "durationMs": 233330,
+      "startedAt": "2026-02-18T10:02:07.069Z",
+      "endedAt": "2026-02-18T10:06:00.399Z"
+    }
+  ],
   "skippedTaskIds": [],
   "cwd": "/Users/Gabriel_P/Downloads/crystal-edu-track-now",
   "activeTaskIds": [],

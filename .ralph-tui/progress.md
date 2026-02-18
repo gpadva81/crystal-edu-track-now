@@ -23,3 +23,14 @@ after each iteration and it's included in prompts for context.
   - After registration, the redirect chain is: `Register` → `Navigate to="/"` → `AuthenticatedApp` → `Layout` → `SetupFlow` (when `!user?.account_type`).
   - Supabase Auth errors can be mapped to inline field errors by checking if the message contains "email" or "password".
 ---
+
+## 2026-02-18 - US-002
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — login, forgot password, auth state handling, and pending invite redirect were all implemented in prior commits (762816f, 769fd83, 496ec2e).
+- **Files verified**:
+  - `src/pages/Login.jsx` — `signInWithPassword()` (line 24), `resetPasswordForEmail()` with `redirectTo: origin` (line 44), forgot password UI with reset-sent confirmation (lines 36-55, 74-86), `Navigate to="/"` on authenticated (line 58).
+  - `src/lib/AuthContext.jsx` — `onAuthStateChange` triggers `fetchProfile()` (lines 58-66), `pendingInvite` localStorage check + redirect after profile fetch (lines 33-37).
+  - `src/App.jsx` — Public route for `/login`, authenticated redirect chain via `AuthenticatedApp`.
+- **Learnings:**
+  - US-002 was fully implemented alongside US-001 in prior iterations. The login flow, password reset, auth state listener, and invite redirect were all already functional.
+  - The `pendingInvite` redirect happens inside `fetchProfile()` in AuthContext, not in the Login page itself. This is correct because it fires on any auth state change (login or register).
+---
