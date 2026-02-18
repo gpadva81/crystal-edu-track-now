@@ -63,7 +63,7 @@ export default function WeeklyCalendar({ assignments, onStatusChange }) {
               className={`rounded-xl border-2 transition-all flex flex-col ${
                 isToday
                   ? "border-violet-400 bg-violet-50/50"
-                  : "border-slate-100 bg-white"
+                  : "border-white/30 bg-white/60 backdrop-blur-sm"
               }`}
             >
               <div className={`p-3 border-b ${isToday ? "border-violet-200 bg-violet-100/50" : "border-slate-100"}`}>

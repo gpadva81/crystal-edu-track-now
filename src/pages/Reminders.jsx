@@ -3,7 +3,6 @@ import { base44 } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Bell,
   Mail,
@@ -14,7 +13,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import moment from "moment";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useStudent } from "../components/auth/StudentContext";
 
@@ -109,7 +108,7 @@ export default function Reminders() {
         className={`flex items-center gap-4 rounded-xl border p-4 transition-all ${
           isOverdue
             ? "bg-rose-50/50 border-rose-100"
-            : "bg-white border-slate-100"
+            : "bg-white/60 backdrop-blur-sm border-white/30"
         }`}
       >
         <div

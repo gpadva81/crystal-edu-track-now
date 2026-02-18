@@ -161,45 +161,93 @@ function LayoutContent({ children, currentPageName, user }) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="sm:hidden"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Nav */}
+      {/* Mobile Nav Sidebar */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
-          <div
-            className="absolute top-16 left-0 right-0 glass-panel border-b shadow-lg p-4 space-y-1"
+        <div className="lg:hidden fixed inset-0 z-40">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setMobileOpen(false)} />
+          <aside
+            className="absolute top-0 left-0 bottom-0 w-72 bg-white/70 backdrop-blur-xl border-r border-white/30 shadow-xl shadow-violet-500/10 flex flex-col animate-in slide-in-from-left duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {NAV_ITEMS.map((item) => {
-              const active = currentPageName === item.page;
-              return (
+            {/* Sidebar header */}
+            <div className="flex items-center justify-between px-4 h-16 border-b border-white/20">
+              <Link to={createPageUrl('Home')} onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
+                <div className="relative h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 via-purple-600 to-violet-700 flex items-center justify-center shadow-lg shadow-violet-500/25">
+                  <div className="absolute inset-0 bg-white/20 rounded-xl"></div>
+                  <GraduationCap className="h-5 w-5 text-white relative z-10" />
+                </div>
+                <span className="text-lg font-bold bg-gradient-to-r from-violet-700 via-purple-600 to-violet-700 bg-clip-text text-transparent tracking-tight">
+                  StudyTrack
+                </span>
+              </Link>
+              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg hover:bg-violet-50">
+                <X className="h-5 w-5 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Nav items */}
+            <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+              {NAV_ITEMS.map((item) => {
+                const active = currentPageName === item.page;
+                return (
+                  <Link
+                    key={item.page}
+                    to={createPageUrl(item.page)}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                      active
+                        ? "bg-violet-500/10 text-violet-700 shadow-sm shadow-violet-500/5"
+                        : "text-slate-500 hover:bg-violet-50 hover:text-violet-700"
+                    }`}
+                  >
+                    <item.icon className={`h-4 w-4 ${active ? "text-violet-500" : ""}`} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+              {isParent && (
                 <Link
-                  key={item.page}
-                  to={createPageUrl(item.page)}
+                  to={createPageUrl("Admin")}
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                    active
-                      ? "bg-violet-500/10 text-violet-700"
-                      : "text-slate-500 hover:bg-violet-50"
+                    currentPageName === "Admin"
+                      ? "bg-violet-500/10 text-violet-700 shadow-sm shadow-violet-500/5"
+                      : "text-slate-500 hover:bg-violet-50 hover:text-violet-700"
                   }`}
                 >
-                  <item.icon className={`h-4 w-4 ${active ? "text-violet-500" : ""}`} />
-                  {item.name}
+                  <Settings className="h-4 w-4" />
+                  Admin Settings
                 </Link>
-              );
-            })}
-          </div>
+              )}
+            </nav>
+
+            {/* User section at bottom */}
+            <div className="border-t border-white/20 p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-sm shrink-0">
+                  <User className="h-4 w-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-slate-700 truncate">{user?.full_name || "User"}</p>
+                  <p className="text-xs text-slate-400">
+                    {isParent ? "Parent Account" : "Student Account"}
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => { setMobileOpen(false); handleLogout(); }}
+                className="w-full justify-start gap-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Log Out
+              </Button>
+            </div>
+          </aside>
         </div>
       )}
 

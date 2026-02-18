@@ -46,7 +46,7 @@ export default function UpcomingList({ assignments, onMarkComplete }) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
               transition={{ delay: i * 0.05 }}
-              className="group flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-4 hover:border-slate-200 hover:shadow-sm transition-all"
+              className="group flex items-center gap-4 rounded-xl border border-white/30 bg-white/60 backdrop-blur-sm p-4 hover:bg-white/70 hover:shadow-sm transition-all"
             >
               <button
                 onClick={() => onMarkComplete(hw)}

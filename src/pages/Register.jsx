@@ -8,20 +8,40 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Loader2 } from "lucide-react";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Register() {
   const { isAuthenticated } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const errors = {};
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!EMAIL_REGEX.test(email)) {
+      errors.email = "Please enter a valid email address";
+    }
+    if (!password) {
+      errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+    return errors;
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
@@ -36,7 +56,15 @@ export default function Register() {
       });
       if (signUpError) throw signUpError;
     } catch (err) {
-      setError(err.message);
+      // Map Supabase errors to inline field errors where possible
+      const msg = err.message || "";
+      if (msg.toLowerCase().includes("email")) {
+        setFieldErrors({ email: msg });
+      } else if (msg.toLowerCase().includes("password")) {
+        setFieldErrors({ password: msg });
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -82,10 +110,17 @@ export default function Register() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: "" }));
+                }}
                 placeholder="you@example.com"
                 required
+                className={fieldErrors.email ? "border-rose-400 focus-visible:ring-rose-400" : ""}
               />
+              {fieldErrors.email && (
+                <p className="text-sm text-rose-600">{fieldErrors.email}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -93,10 +128,17 @@ export default function Register() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: "" }));
+                }}
                 placeholder="At least 6 characters"
                 required
+                className={fieldErrors.password ? "border-rose-400 focus-visible:ring-rose-400" : ""}
               />
+              {fieldErrors.password && (
+                <p className="text-sm text-rose-600">{fieldErrors.password}</p>
+              )}
             </div>
             <Button
               type="submit"

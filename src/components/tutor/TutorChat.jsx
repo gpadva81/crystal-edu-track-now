@@ -2,12 +2,21 @@ import React, { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Loader2, Sparkles, User, Bot, Paperclip, X, Image as ImageIcon } from "lucide-react";
+import { Send, Loader2, Sparkles, User, Paperclip, X, Image as ImageIcon, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTutorPersonality, tutorPersonalities } from "./tutorPersonalities";
+
+const formatTimestamp = (ts) => {
+  if (!ts) return "";
+  const date = new Date(ts);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const time = date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  if (isToday) return time;
+  return `${date.toLocaleDateString([], { month: "short", day: "numeric" })} ${time}`;
+};
 
 export default function TutorChat({ conversation, onUpdate, studentGrade }) {
   const [selectedTutorId, setSelectedTutorId] = useState(conversation?.tutor_id || "alex");
@@ -263,7 +272,14 @@ CRITICAL - YOUR TEACHING PHILOSOPHY:
 
 Guide them with questions, not answers.
 
-As you interact, if you notice insights about their learning style, update the profile_updates field.`,
+PROFILE UPDATES: As you interact, include profile_updates when you notice something new about the student:
+- learning_insight: how they learn best
+- strength_observed: a strength they showed
+- area_to_work_on: where they need help
+- misconception: a misunderstanding they revealed
+- preferred_style: how they prefer explanations
+- motivation_note: what engages them
+- handoff_note: what the next tutor should know`,
       file_urls: uploadedFiles.length > 0 ? uploadedFiles.map(f => f.url) : undefined,
       response_json_schema: {
         type: "object",
@@ -278,10 +294,13 @@ As you interact, if you notice insights about their learning style, update the p
             type: "object",
             description: "Updates to share with other tutors about this student (only include if you noticed something new)",
             properties: {
-              learning_insight: { type: "string" },
-              strength_observed: { type: "string" },
-              area_to_work_on: { type: "string" },
-              handoff_note: { type: "string" }
+              learning_insight: { type: "string", description: "Observation about how the student learns best" },
+              strength_observed: { type: "string", description: "A strength the student demonstrated" },
+              area_to_work_on: { type: "string", description: "An area where the student needs improvement" },
+              misconception: { type: "string", description: "A common misconception the student has shown" },
+              preferred_style: { type: "string", description: "How the student prefers explanations (e.g., visual, step-by-step, analogies)" },
+              motivation_note: { type: "string", description: "What motivates or engages this student" },
+              handoff_note: { type: "string", description: "Note for other tutors about this session" }
             }
           }
         }
@@ -296,32 +315,51 @@ As you interact, if you notice insights about their learning style, update the p
 
     setSuggestions(response.suggestions || []);
 
-    // Update learning profile if tutor noticed something new
+    // Update learning profile if tutor noticed something new (non-destructive: append arrays, concatenate strings)
     if (response.profile_updates && learningProfile) {
       const updates = {};
-      
+
       if (response.profile_updates.learning_insight) {
         updates.learning_style_notes = learningProfile.learning_style_notes
           ? `${learningProfile.learning_style_notes} | ${response.profile_updates.learning_insight}`
           : response.profile_updates.learning_insight;
       }
-      
+
       if (response.profile_updates.strength_observed) {
         updates.strengths = [
           ...(learningProfile.strengths || []),
           response.profile_updates.strength_observed,
         ];
       }
-      
+
       if (response.profile_updates.area_to_work_on) {
         updates.areas_for_growth = [
           ...(learningProfile.areas_for_growth || []),
           response.profile_updates.area_to_work_on,
         ];
       }
-      
+
+      if (response.profile_updates.misconception) {
+        updates.common_misconceptions = [
+          ...(learningProfile.common_misconceptions || []),
+          response.profile_updates.misconception,
+        ];
+      }
+
+      if (response.profile_updates.preferred_style) {
+        updates.preferred_explanation_style = response.profile_updates.preferred_style;
+      }
+
+      if (response.profile_updates.motivation_note) {
+        updates.motivation_factors = learningProfile.motivation_factors
+          ? `${learningProfile.motivation_factors} | ${response.profile_updates.motivation_note}`
+          : response.profile_updates.motivation_note;
+      }
+
       if (response.profile_updates.handoff_note) {
-        updates.tutor_handoff_notes = `[${tutor.name}]: ${response.profile_updates.handoff_note}`;
+        updates.tutor_handoff_notes = learningProfile.tutor_handoff_notes
+          ? `${learningProfile.tutor_handoff_notes} | [${tutor.name}]: ${response.profile_updates.handoff_note}`
+          : `[${tutor.name}]: ${response.profile_updates.handoff_note}`;
       }
 
       if (Object.keys(updates).length > 0) {
@@ -414,7 +452,7 @@ As you interact, if you notice insights about their learning style, update the p
                     setInput(prompt);
                     document.querySelector('input[placeholder*="Ask a question"]')?.focus();
                   }}
-                  className="px-4 py-2 rounded-full bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-300 text-sm text-slate-600 transition-colors"
+                  className="px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm hover:bg-violet-50 border border-white/30 hover:border-violet-300 text-sm text-slate-600 transition-colors"
                 >
                   {prompt}
                 </button>
@@ -442,22 +480,32 @@ As you interact, if you notice insights about their learning style, update the p
                   />
                 </div>
               )}
-              <div
-                className={`max-w-[80%] rounded-2xl px-5 py-4 ${
-                  msg.role === "user"
-                    ? "bg-slate-800 text-white"
-                    : "bg-white border border-slate-100 shadow-sm"
-                }`}
-              >
-                {msg.role === "user" ? (
-                  <p className="text-base leading-7">{msg.content}</p>
-                ) : (
-                  <div>
-                    <div className={`text-xs font-semibold text-${tutor.color}-600 mb-2`}>{tutor.name}</div>
-                    <ReactMarkdown className="text-base prose prose-slate max-w-none [&>p]:mb-4 [&>p]:leading-7 [&>ul]:my-3 [&>ol]:my-3 [&>li]:mb-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                      {msg.content}
-                    </ReactMarkdown>
-                  </div>
+              <div className="flex flex-col">
+                <div
+                  className={`max-w-[80%] rounded-2xl px-5 py-4 ${
+                    msg.role === "user"
+                      ? "bg-slate-800 text-white"
+                      : "bg-white/70 backdrop-blur-sm border border-white/30 shadow-sm"
+                  }`}
+                >
+                  {msg.role === "user" ? (
+                    <p className="text-base leading-7">{msg.content}</p>
+                  ) : (
+                    <div>
+                      <div className={`text-xs font-semibold text-${tutor.color}-600 mb-2`}>{tutor.name}</div>
+                      <ReactMarkdown className="text-base prose prose-slate max-w-none [&>p]:mb-4 [&>p]:leading-7 [&>ul]:my-3 [&>ol]:my-3 [&>li]:mb-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                        {msg.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+                {msg.timestamp && (
+                  <span className={`text-[10px] text-slate-400 mt-1 flex items-center gap-1 ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}>
+                    <Clock className="h-2.5 w-2.5" />
+                    {formatTimestamp(msg.timestamp)}
+                  </span>
                 )}
               </div>
               {msg.role === "user" && (
@@ -482,7 +530,7 @@ As you interact, if you notice insights about their learning style, update the p
                 className={`h-9 w-9 rounded-lg object-cover border-2 border-${tutor.color}-200`}
               />
             </div>
-            <div className="bg-white border border-slate-100 rounded-2xl px-5 py-4 shadow-sm">
+            <div className="bg-white/70 backdrop-blur-sm border border-white/30 rounded-2xl px-5 py-4 shadow-sm">
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
                 <span className="text-base text-slate-400">Thinking...</span>
@@ -518,7 +566,7 @@ As you interact, if you notice insights about their learning style, update the p
         <div ref={endRef} />
       </div>
 
-      <div className="border-t border-slate-100 bg-white p-4">
+      <div className="border-t border-white/30 bg-white/60 backdrop-blur-sm p-4">
         {uploadedFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {uploadedFiles.map((file, idx) => (

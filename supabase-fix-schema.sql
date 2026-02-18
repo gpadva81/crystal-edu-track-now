@@ -197,7 +197,7 @@ create table public.student_learning_profile (
   areas_for_growth text[] default '{}',
   learning_style_notes text,
   preferred_explanation_style text,
-  common_misconceptions text,
+  common_misconceptions text[] default '{}',
   motivation_factors text,
   tutor_handoff_notes text,
   created_date timestamptz default now(),

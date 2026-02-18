@@ -24,7 +24,6 @@ import {
   Trash2,
   BookOpen,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useStudent } from "../components/auth/StudentContext";
 import { useEffect } from "react";
 
