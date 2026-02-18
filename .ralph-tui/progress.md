@@ -350,3 +350,23 @@ after each iteration and it's included in prompts for context.
   - The comment RLS policies are the most complex in the app — they join through `homework → student` and then check three access paths (student user, parent owner, junction collaborator). This pattern was established in the multi-parent migration for all tables.
   - The `accountBadge` helper in `HomeworkComments.jsx` returns different colored badges: violet for Parent, blue for Student — consistent with the app's color convention.
 ---
+
+## 2026-02-18 - US-020
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Parent Collaboration Invites were fully implemented in a prior iteration alongside the multi-parent collaboration system.
+- **Files verified** (no changes needed):
+  - `src/components/collaboration/InviteParentDialog.jsx` — Full dialog component: generate invite link via `ParentInvite.create()` (lines 50-63), copy-to-clipboard with `navigator.clipboard.writeText()` and 2s "Copied" feedback (lines 80-85), invite history sorted by `-created_date` with pending/accepted/revoked colored badges (lines 87-98, 136-186), revoke pending invites via `ParentInvite.update(id, { status: "revoked" })` (lines 65-78).
+  - `src/Layout.jsx` — "Invite a Parent" `UserPlus` icon button in header, only for parent accounts (`isParent && currentStudent`, lines 115-125). `InviteParentDialog` rendered with open/onOpenChange state (lines 211-213).
+  - `src/api/supabaseClient.js` — `ParentInvite` entity registered as `SupabaseEntity("parent_invite")` (line 247).
+- **Acceptance Criteria Verification:**
+  - [x] "Invite a Parent" button in header (parent accounts only) — `Layout.jsx:115-125` (UserPlus icon, `isParent` gate)
+  - [x] Generates shareable link with 48-character hex token, 7-day expiry — `InviteParentDialog.jsx:50-63` (create via ParentInvite entity; token/expiry generated server-side)
+  - [x] Link format: `{origin}/accept-invite?token={token}` — `InviteParentDialog.jsx:81`
+  - [x] Copy-to-clipboard functionality — `InviteParentDialog.jsx:80-85` (navigator.clipboard.writeText + Copied feedback)
+  - [x] Invite history with pending/accepted/revoked badges and timestamps — `InviteParentDialog.jsx:87-98,136-186`
+  - [x] Owner can revoke pending invites — `InviteParentDialog.jsx:65-78,152-175` (Revoke button only on pending)
+- **Learnings:**
+  - US-020 was fully implemented in a prior iteration as part of the multi-parent collaboration system. All six acceptance criteria pass without any changes.
+  - The token generation (48-character hex) and 7-day expiry are handled server-side (database trigger or default column values), not in client code. The client just calls `ParentInvite.create()`.
+  - The `InviteParentDialog` uses a simple state pattern: `invites` array is loaded on open, updated optimistically on generate/revoke. No React Query needed since this is a dialog with infrequent access.
+  - The `copiedToken` state with `setTimeout` clear is an effective pattern for copy-to-clipboard feedback — avoids needing a separate boolean per invite.
+---
