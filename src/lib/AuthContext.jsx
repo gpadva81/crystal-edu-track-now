@@ -29,6 +29,13 @@ export const AuthProvider = ({ children }) => {
 
       setUser({ ...profile, email: authUser.email });
       setIsAuthenticated(true);
+
+      // Check for a pending invite link saved before login/register
+      const pendingInvite = localStorage.getItem('pendingInvite');
+      if (pendingInvite) {
+        localStorage.removeItem('pendingInvite');
+        window.location.href = pendingInvite;
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
       setAuthError({ type: 'auth_required' });

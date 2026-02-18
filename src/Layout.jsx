@@ -13,6 +13,8 @@ import {
   Loader2,
   LogOut,
   User,
+  UserPlus,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +27,7 @@ import {
 import { StudentProvider, useStudent } from "./components/auth/StudentContext";
 import StudentSelector from "./components/auth/StudentSelector";
 import SetupFlow from "./components/auth/SetupFlow";
+import InviteParentDialog from "./components/collaboration/InviteParentDialog";
 import { useAuth } from "@/lib/AuthContext";
 
 const NAV_ITEMS = [
@@ -39,6 +42,7 @@ const NAV_ITEMS = [
 
 function LayoutContent({ children, currentPageName, user }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
   const { currentStudent, isParent } = useStudent();
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -115,7 +119,19 @@ function LayoutContent({ children, currentPageName, user }) {
 
           <div className="flex items-center gap-3">
             <StudentSelector />
-            
+
+            {isParent && currentStudent && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setInviteOpen(true)}
+                className="h-8 w-8 text-slate-500 hover:text-amber-600 hover:bg-amber-50"
+                title="Invite a parent to collaborate"
+              >
+                <UserPlus className="h-4 w-4" />
+              </Button>
+            )}
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 hidden sm:flex">
@@ -141,6 +157,12 @@ function LayoutContent({ children, currentPageName, user }) {
                   )}
                 </div>
                 <DropdownMenuSeparator />
+                {isParent && (
+                  <DropdownMenuItem onClick={() => navigate(createPageUrl("Admin"))}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin Settings
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={handleLogout} className="text-rose-600">
                   <LogOut className="h-4 w-4 mr-2" />
                   Log Out
@@ -193,6 +215,10 @@ function LayoutContent({ children, currentPageName, user }) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {children}
       </main>
+
+      {isParent && (
+        <InviteParentDialog open={inviteOpen} onOpenChange={setInviteOpen} />
+      )}
     </div>
   );
 }

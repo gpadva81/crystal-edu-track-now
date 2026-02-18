@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import moment from "moment";
+import HomeworkComments from "./HomeworkComments";
 
 const statusConfig = {
   todo: { icon: Circle, color: "text-slate-400", bg: "bg-slate-50", label: "To Do" },
@@ -246,6 +247,9 @@ export default function HomeworkTable({
                         <Trash2 className="h-4 w-4 mr-2" />
                         Delete
                       </Button>
+                    </div>
+                    <div className="px-4 pb-4">
+                      <HomeworkComments homeworkId={hw.id} />
                     </div>
                   </motion.div>
                 )}

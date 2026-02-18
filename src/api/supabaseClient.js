@@ -66,6 +66,16 @@ class SupabaseEntity {
     return row;
   }
 
+  async filterIn(column, values, selectColumns = "*") {
+    if (!values || values.length === 0) return [];
+    const { data, error } = await supabase
+      .from(this.table)
+      .select(selectColumns)
+      .in(column, values);
+    if (error) throw error;
+    return data;
+  }
+
   async delete(id) {
     const { error } = await supabase
       .from(this.table)
@@ -115,6 +125,14 @@ const auth = {
 
   async logout() {
     await supabase.auth.signOut();
+  },
+
+  async changePassword(newPassword) {
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    if (error) throw error;
+    return data;
   },
 };
 
@@ -178,6 +196,44 @@ const appLogs = {
 // ---------------------------------------------------------------------------
 // Export with identical shape to localClient
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// RPC helpers
+// ---------------------------------------------------------------------------
+const rpc = {
+  async acceptParentInvite(token) {
+    const { data, error } = await supabase.rpc("accept_parent_invite", {
+      invite_token: token,
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async getApiKey() {
+    const { data, error } = await supabase.rpc("get_api_key");
+    if (error) throw error;
+    return data;
+  },
+
+  async updateApiKey(newApiKey) {
+    const { data, error } = await supabase.rpc("update_api_key", {
+      new_api_key: newApiKey,
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async removeStudentParent(studentParentId) {
+    const { data, error } = await supabase.rpc("admin_remove_student_parent", {
+      p_student_parent_id: studentParentId,
+    });
+    if (error) throw error;
+    return data;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Export with identical shape to localClient
+// ---------------------------------------------------------------------------
 export const base44 = {
   auth,
   entities: {
@@ -187,7 +243,11 @@ export const base44 = {
     TutorConversation: new SupabaseEntity("tutor_conversation"),
     StudentLearningProfile: new SupabaseEntity("student_learning_profile"),
     Achievement: new SupabaseEntity("achievement"),
+    StudentParent: new SupabaseEntity("student_parent"),
+    ParentInvite: new SupabaseEntity("parent_invite"),
+    HomeworkComment: new SupabaseEntity("homework_comment"),
   },
+  rpc,
   integrations,
   appLogs,
 };

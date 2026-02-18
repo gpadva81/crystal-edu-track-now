@@ -27,15 +27,33 @@ export const StudentProvider = ({ children }) => {
   const loadStudentData = async () => {
     try {
       if (user.account_type === "parent") {
-        const parentStudents = await base44.entities.Student.filter({
+        // Fetch owned students (original parent_user_id FK)
+        const ownedStudents = await base44.entities.Student.filter({
           parent_user_id: user.id,
         });
-        setStudents(parentStudents);
+
+        // Fetch shared links via junction table
+        const sharedLinks = await base44.entities.StudentParent.filter({
+          parent_user_id: user.id,
+        });
+        const sharedIds = sharedLinks
+          .map((sp) => sp.student_id)
+          .filter((id) => !ownedStudents.some((s) => s.id === id));
+
+        // Fetch shared student records
+        const sharedStudents =
+          sharedIds.length > 0
+            ? await base44.entities.Student.filterIn("id", sharedIds)
+            : [];
+
+        // Merge + deduplicate
+        const allStudents = [...ownedStudents, ...sharedStudents];
+        setStudents(allStudents);
 
         const savedStudentId = localStorage.getItem("selectedStudentId");
         const selected = savedStudentId
-          ? parentStudents.find(s => s.id === savedStudentId) || parentStudents[0]
-          : parentStudents[0];
+          ? allStudents.find((s) => s.id === savedStudentId) || allStudents[0]
+          : allStudents[0];
 
         setCurrentStudent(selected);
       } else {

@@ -56,10 +56,12 @@ import Import from './pages/Import';
 import Reminders from './pages/Reminders';
 import Rewards from './pages/Rewards';
 import Tutor from './pages/Tutor';
+import Admin from './pages/Admin';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Admin": Admin,
     "Assignments": Assignments,
     "ClassDetails": ClassDetails,
     "Classes": Classes,
