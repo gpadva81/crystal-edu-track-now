@@ -5,9 +5,7 @@ import { useStudent } from "../components/auth/StudentContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   ArrowLeft,
   BookOpen,
@@ -180,7 +178,14 @@ export default function ClassDetails() {
           <BookOpen className="h-7 w-7 text-white" />
         </div>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-slate-800">{classData.name}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-slate-800">{classData.name}</h1>
+            {homework.length > 0 && (
+              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
+                Active
+              </Badge>
+            )}
+          </div>
           {classData.subject && (
             <p className="text-slate-500 mt-1">{classData.subject}</p>
           )}

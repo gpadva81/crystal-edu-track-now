@@ -156,3 +156,21 @@ after each iteration and it's included in prompts for context.
   - The AlertDialog confirmation pattern (using a state variable as both open trigger and data source) was established in US-006 and reused here consistently.
   - Pre-existing unused imports: `base44` in `ClassCard.jsx` and `error` catch variable in `Classes.jsx` importFromHomework. Not addressed as they're pre-existing.
 ---
+
+## 2026-02-18 - US-010
+- **What was implemented**: The Class Detail Page was ~95% complete from prior iterations. Two small gaps were found and fixed:
+  1. **"Active" badge**: Added a green "Active" badge next to the class name in the header when the class has any assignments (AC4).
+  2. **Unused import cleanup**: Removed unused `Textarea` and `Label` imports that were causing lint errors.
+- **Files changed**:
+  - `src/pages/ClassDetails.jsx` — Added `Badge` "Active" indicator in header (conditional on `homework.length > 0`), removed unused `Textarea` and `Label` imports.
+- **Acceptance Criteria Verification:**
+  - [x] Header with class metadata: teacher name, email, phone, room, schedule, current grade — `ClassDetails.jsx:198-273` (2-col grid with teacher, schedule, room, grade with inline edit; contact section with email/call buttons)
+  - [x] Assignment table filtered to that class — `ClassDetails.jsx:52-60` (query filters by `student_id` AND `class_id`), `HomeworkTable` rendered at lines 364-377
+  - [x] Per-assignment actions: AI Assistance, Send Reminder, Edit, Delete — `openTutor()` (lines 105-128), `sendReminder()` (lines 130-144), `onEdit` (lines 370-373), `onDelete` (line 374). All four actions passed to `HomeworkTable` and rendered in expanded rows.
+  - [x] "Active" badge when class has assignments — `ClassDetails.jsx:186-189` (conditional Badge in header)
+- **Learnings:**
+  - US-010 was ~95% implemented in a prior iteration. The `ClassDetails` page already existed with full class metadata header, filtered assignment table, and all per-assignment actions wired up.
+  - The `ClassCard` component already had navigation to `ClassDetails?classId=${classData.id}` (line 40), and the route was already registered in `pages.config.js`.
+  - The `ClassDetails` page has its own `openTutor` and `sendReminder` implementations (duplicated from `Assignments.jsx`) rather than sharing a utility. This is acceptable given each page manages its own mutations and query keys.
+  - The grade inline-edit pattern (toggle between display and input using `editingGrade` state) is unique to this page — other edits use dialog forms.
+---

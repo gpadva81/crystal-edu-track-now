@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:25:23.417Z",
-  "currentIteration": 8,
+  "updatedAt": "2026-02-18T10:27:51.810Z",
+  "currentIteration": 9,
   "maxIterations": 50,
-  "tasksCompleted": 8,
+  "tasksCompleted": 9,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -65,8 +65,8 @@
       {
         "id": "US-009",
         "title": "Class Management",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-010",
@@ -240,6 +240,16 @@
       "durationMs": 132133,
       "startedAt": "2026-02-18T10:18:58.406Z",
       "endedAt": "2026-02-18T10:21:10.539Z"
+    },
+    {
+      "iteration": 9,
+      "status": "completed",
+      "taskId": "US-009",
+      "taskTitle": "Class Management",
+      "taskCompleted": true,
+      "durationMs": 251807,
+      "startedAt": "2026-02-18T10:21:11.608Z",
+      "endedAt": "2026-02-18T10:25:23.415Z"
     }
   ],
   "skippedTaskIds": [],
