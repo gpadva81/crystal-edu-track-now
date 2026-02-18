@@ -288,3 +288,21 @@ after each iteration and it's included in prompts for context.
   - The streak calculation has a nice UX touch: if today has no completions yet, it starts counting from yesterday. This prevents the streak from resetting mid-day before the student has done any work.
   - The GamificationCard also fetches `Achievement` records separately (not from the `assignments` prop) for the badge unlock system. Achievement unlocks are persisted to the database via mutation.
 ---
+
+## 2026-02-18 - US-017
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Parent Achievement Rewards were fully implemented in a prior iteration alongside US-016 (Achievement Badges) and the Rewards page.
+- **Files verified** (no changes needed):
+  - `src/pages/Rewards.jsx` — Parent reward editing: `isParent` check from `useStudent()` (line 48), `editingReward` state (line 50), upsert mutation finds existing achievement by name or creates new record with `{ student_id, name, reward, unlocked: false }` (lines 64-82). Edit UI: input+save shown when `isParent && isEditing` (lines 200-221), edit button shown only for parents (lines 229-236). "Reward Earned!" badge shown when `isUnlocked && reward` (lines 242-246). Students see reward text read-only (lines 224-228) with no edit controls.
+  - `src/components/dashboard/GamificationCard.jsx` — Dashboard badge grid shows gift icon (lines 172-174) and reward text (lines 184-188) when badge is unlocked and has reward.
+  - `supabase-fix-schema.sql` — `achievement` table has `reward text` column (line 255).
+- **Acceptance Criteria Verification:**
+  - [x] Parents can set reward text per achievement on `/Rewards` page — `Rewards.jsx:200-236` (edit input for parents, read-only for students)
+  - [x] Reward text stored in `achievement.reward` field via upsert — `Rewards.jsx:64-82` (upsertMutation with find-or-create pattern)
+  - [x] When badge is unlocked and has reward, shows "Reward Earned!" badge + reward text — `Rewards.jsx:242-246` (Badge), `GamificationCard.jsx:172-188` (gift icon + text on Dashboard)
+  - [x] Students see rewards read-only; only parents can edit — `Rewards.jsx:229` (`isParent` gate on Edit button), no edit controls for students
+- **Learnings:**
+  - US-017 was fully implemented in a prior iteration alongside US-016 and the Rewards page. All four acceptance criteria pass without any changes.
+  - The upsert pattern in `Rewards.jsx` uses a find-then-create/update approach rather than a database-level upsert. This works because achievement names are unique per student (ensured by the badge type definitions).
+  - The `GamificationCard` on the Dashboard also displays reward info (gift icon + truncated text) for unlocked badges, providing reward visibility outside the dedicated Rewards page.
+  - Pre-existing unused `Badge` import in `GamificationCard.jsx` remains (known lint issue, not from current work).
+---

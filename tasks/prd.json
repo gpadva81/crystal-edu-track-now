@@ -290,9 +290,10 @@
         "Students see rewards read-only; only parents can edit"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "labels": [],
-      "dependsOn": []
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
     },
     {
       "id": "US-018",
@@ -419,6 +420,6 @@
     "createdAt": "2026-02-18T09:35:37.542Z",
     "version": "1.0.0",
     "sourcePrd": "tasks/prd.md",
-    "updatedAt": "2026-02-18T10:42:35.500Z"
+    "updatedAt": "2026-02-18T10:43:42.524Z"
   }
 }
