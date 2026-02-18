@@ -328,3 +328,25 @@ after each iteration and it's included in prompts for context.
   - The `sendAllReminders` function combines overdue+upcoming into a single digest with color-coded status labels (red for overdue, amber for upcoming).
   - Pre-existing unused imports (`Badge`, `AnimatePresence`) were cleaned up since this is the target file for US-018.
 ---
+
+## 2026-02-18 - US-019
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — Homework Comments were fully implemented in a prior iteration alongside the multi-parent collaboration migration.
+- **Files verified** (no changes needed):
+  - `src/components/homework/HomeworkComments.jsx` — Full comment component: queries `homework_comment` table with Supabase foreign key join to `profiles` (line 23), 30-second auto-refresh (line 29), create/delete mutations via `base44.entities.HomeworkComment` (lines 32-53), Enter-to-submit with Shift+Enter for newline (lines 62-67), author name + account type badge + relative timestamp (lines 119-125), own-comment-only delete button (line 131), comment input with send button (lines 150-171).
+  - `src/components/homework/HomeworkTable.jsx` — Imports and renders `HomeworkComments` in expanded rows (line 37, line 308).
+  - `src/api/supabaseClient.js` — `HomeworkComment` entity registered as `SupabaseEntity("homework_comment")` (line 248).
+  - `supabase-multi-parent-migration.sql` — `homework_comment` table (lines 200-207) with RLS policies for select/insert/update/delete (lines 212-254). SELECT and INSERT policies check student, parent, AND junction table parents. DELETE policy enforces `user_id = auth.uid()`. Performance index on `homework_id` (line 649).
+- **Acceptance Criteria Verification:**
+  - [x] Threaded comments visible in expanded assignment row — `HomeworkTable.jsx:307-309`, `HomeworkComments.jsx:89-172`
+  - [x] Shows author name, account type badge (Parent/Student), relative timestamp — `HomeworkComments.jsx:119-125` (name, badge, `moment().fromNow()`)
+  - [x] Auto-refreshes every 30 seconds — `HomeworkComments.jsx:29` (`refetchInterval: 30000`)
+  - [x] Enter submits, Shift+Enter for newline — `HomeworkComments.jsx:62-67` (keyDown handler), textarea at line 151
+  - [x] Users can delete only their own comments — `HomeworkComments.jsx:131` (UI gate), `migration.sql:253-254` (RLS)
+  - [x] Accessible to student + all linked parents — `migration.sql:212-246` (RLS checks `student_user_id`, `parent_user_id`, and `student_parent` junction)
+  - [x] Author profile joined from `profiles` table — `HomeworkComments.jsx:23` (`.select("*, profiles:user_id(full_name, account_type)")`)
+- **Learnings:**
+  - US-019 was fully implemented in a prior iteration as part of the multi-parent collaboration migration (`supabase-multi-parent-migration.sql`). All seven acceptance criteria pass without any changes.
+  - The `HomeworkComments` component uses direct Supabase queries with a foreign key join (not the `base44.entities` filter method) for the read path, because it needs the `profiles` join. The write path still uses `base44.entities.HomeworkComment.create/delete`.
+  - The comment RLS policies are the most complex in the app — they join through `homework → student` and then check three access paths (student user, parent owner, junction collaborator). This pattern was established in the multi-parent migration for all tables.
+  - The `accountBadge` helper in `HomeworkComments.jsx` returns different colored badges: violet for Parent, blue for Student — consistent with the app's color convention.
+---
