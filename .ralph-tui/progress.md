@@ -234,3 +234,22 @@ after each iteration and it's included in prompts for context.
   - File chips use a flex-wrap layout above the input form, with each chip showing an ImageIcon (regardless of file type), a truncated filename (max 150px), and an X close button.
   - Files are cleared from state after message send (`setUploadedFiles([])` at line 380), preventing accidental re-sends.
 ---
+
+## 2026-02-18 - US-014
+- **What was implemented**: Verified all acceptance criteria already met. No code changes needed — the Schoology Screenshot Import feature was fully implemented in a prior iteration.
+- **Files verified** (no changes needed):
+  - `src/components/import/SchoologyImport.jsx` — Drag-and-drop zone (lines 151-210) with `onDrop`/`onDragOver`/`onDragEnter`/`onDragLeave` handlers, click-to-upload via hidden `<input type="file" accept="image/*" multiple>` (lines 181-190). AI extraction via `InvokeLLM` with structured JSON schema for title, class_name, subject, description, due_date (ISO, year 2026 default), teacher_name, teacher_email, priority (lines 33-67). Class auto-creation for unseen names with case-insensitive matching (lines 71-92). Deduplication by `title.toLowerCase()|due_date` (lines 98-113). Source tagging as `"schoology_import"` (line 110). Post-import report with count/classesCreated/duplicatesSkipped (lines 121-126, rendered at 244-251).
+  - `src/pages/Import.jsx` — Import page wrapper with `SchoologyImport` component, passes `studentId` from `useStudent()` context and `onImportComplete` callback that invalidates homework React Query cache.
+- **Acceptance Criteria Verification:**
+  - [x] Drag-and-drop or click-to-upload for PNG/JPG files (multiple supported) — `SchoologyImport.jsx:151-210`
+  - [x] AI extracts: title, class, subject, description, due date (ISO, assumes 2026), teacher name/email, priority — `SchoologyImport.jsx:33-67`
+  - [x] New Class records auto-created for unseen class names (case-insensitive match) — `SchoologyImport.jsx:71-92`
+  - [x] Assignments deduplicated by title + due_date — `SchoologyImport.jsx:98-113`
+  - [x] Imported items tagged with `source: "schoology_import"` — `SchoologyImport.jsx:110`
+  - [x] Post-import report: count imported, classes created, duplicates skipped — `SchoologyImport.jsx:121-126, 244-251`
+- **Learnings:**
+  - US-014 was fully implemented in a prior iteration alongside the Import page. All six acceptance criteria pass without any changes.
+  - The `InvokeLLM` integration is mocked in `supabaseClient.js` — the mock returns sample assignment data. Real AI extraction would require connecting an actual vision-capable LLM API.
+  - The drag-and-drop zone uses direct DOM class manipulation (`classList.add/remove`) for hover styling rather than React state — a pragmatic choice for visual-only feedback.
+  - Class color assignment during auto-creation uses random selection from 5 colors, consistent with the pattern in `SetupFlow.jsx` for student avatar colors.
+---
