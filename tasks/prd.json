@@ -1,0 +1,409 @@
+{
+  "name": "StudyTrack - Product Requirements Document",
+  "description": "StudyTrack is a homework management platform for K-12 students and their parents. Students track assignments, get AI tutoring help, and earn gamification rewards. Parents monitor progress across multiple children, collaborate with co-parents, and set rewards for achievements.",
+  "branchName": "feature/studytrack-prd",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "User Registration",
+      "description": "As a new user, I want to create an account with email and password so I can access StudyTrack.",
+      "acceptanceCriteria": [
+        "Email + password signup with minimum 6-character password",
+        "Supabase Auth creates user and auto-inserts `profiles` row via database trigger",
+        "After registration, user is redirected to the setup flow",
+        "Validation errors shown inline for invalid email or short password"
+      ],
+      "priority": 1,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-002",
+      "title": "User Login and Password Reset",
+      "description": "As a returning user, I want to sign in with my credentials and reset my password if forgotten.",
+      "acceptanceCriteria": [
+        "Email + password sign-in via `supabase.auth.signInWithPassword()`",
+        "\"Forgot password\" sends Supabase reset email with redirect to app origin",
+        "Auth state change triggers profile fetch and route to appropriate page",
+        "If `pendingInvite` exists in localStorage, user is redirected to accept invite after login"
+      ],
+      "priority": 2,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-003",
+      "title": "Account Setup Flow",
+      "description": "As a first-time user, I want to choose whether I'm a student or parent and set up my profile so the app is personalized for me.",
+      "acceptanceCriteria": [
+        "Step 1: Choose \"I'm a Student\" or \"I'm a Parent\"",
+        "Step 2 (Student): Enter name, grade level, school -> creates `Student` record with `student_user_id`",
+        "Step 2 (Parent): Add one or more child cards (name, grade, school, avatar color) -> creates `Student` records with `parent_user_id`",
+        "Parent can dynamically add/remove child cards before submitting",
+        "`account_type` persists on `profiles` table",
+        "Users cannot access authenticated pages until setup is complete"
+      ],
+      "priority": 3,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-004",
+      "title": "Student Dashboard",
+      "description": "As a student, I want to see an overview of my assignments, progress, and achievements on my dashboard.",
+      "acceptanceCriteria": [
+        "Stats cards: total assignments, completed, in-progress, completion percentage",
+        "SVG donut completion chart with linear progress bars per status",
+        "Gamification card: points, level, streak, badge grid",
+        "Weekly calendar: 7-day grid with assignments, status icons, priority borders",
+        "Quick-add button to create assignment without leaving dashboard",
+        "All data scoped to selected student"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-005",
+      "title": "Parent Student Switching",
+      "description": "As a parent with multiple children, I want to switch between students so I can view each child's data.",
+      "acceptanceCriteria": [
+        "Student selector dropdown in header (visible only for parents with 2+ children)",
+        "Switching students updates all dashboard data, assignments, classes immediately",
+        "Selected student persisted to localStorage across sessions",
+        "Parents see owned students AND shared students (via `student_parent` junction) merged and deduplicated"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-006",
+      "title": "Assignment CRUD and List View",
+      "description": "As a student, I want to create, view, edit, and delete assignments so I can track my homework.",
+      "acceptanceCriteria": [
+        "List view with search by title and filter by status (All/To Do/Working On/Done)",
+        "Expandable rows with full details, comments, and action buttons",
+        "Create/edit via dialog: title (required), class link, subject, priority, due date, description, notes, teacher feedback",
+        "New assignments default to `status: \"todo\"`, `source: \"manual\"`",
+        "Inline status change via icon click -> dropdown (todo/in_progress/completed)",
+        "\"Schoology\" badge on imported items",
+        "Delete with confirmation"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-007",
+      "title": "Assignment Calendar View",
+      "description": "As a student, I want to see my assignments on a monthly calendar so I can visualize my workload.",
+      "acceptanceCriteria": [
+        "Full monthly grid with assignments on their due dates",
+        "Status icon + priority color border on each assignment",
+        "Today highlighted with violet ring",
+        "Prev/next month navigation and \"Today\" button",
+        "Clicking an assignment opens the edit form",
+        "Assignments without due dates are hidden from calendar"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-008",
+      "title": "Assignment Actions",
+      "description": "As a student, I want to send reminders, email teachers, and get AI help for individual assignments.",
+      "acceptanceCriteria": [
+        "\"Send Reminder\" sends HTML email to current user with assignment details",
+        "\"Email Teacher\" opens mailto link (visible only if teacher email on file)",
+        "\"Get AI Assistance\" creates a `TutorConversation` linked via `homework_id` and navigates to `/Tutor?conversationId=...`",
+        "Conversation title auto-fills: \"Help with: [assignment title]\""
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-009",
+      "title": "Class Management",
+      "description": "As a student, I want to organize my classes with teacher info and schedules so I have everything in one place.",
+      "acceptanceCriteria": [
+        "Class grid with color-coded cards showing name, schedule, grade, teacher info",
+        "Contact buttons (email/call) when teacher info available",
+        "Create/edit dialog: name, subject, color (6 presets), teacher name/email/phone, room, schedule, grade",
+        "\"Import from Homework\" auto-generates classes from unique subjects in existing assignments",
+        "Deleting a class nullifies `class_id` on linked assignments (does not delete them)",
+        "Classes scoped to selected student"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-010",
+      "title": "Class Detail Page",
+      "description": "As a student, I want to view a single class with its assignments and teacher details.",
+      "acceptanceCriteria": [
+        "Header with class metadata: teacher name, email, phone, room, schedule, current grade",
+        "Assignment table filtered to that class",
+        "Per-assignment actions: AI Assistance, Send Reminder, Edit, Delete",
+        "\"Active\" badge when class has assignments"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-011",
+      "title": "AI Tutor Chat",
+      "description": "As a student, I want to chat with an AI tutor that guides me through problems using the Socratic method.",
+      "acceptanceCriteria": [
+        "Sidebar listing all conversation sessions sorted by most recent",
+        "New conversation: select topic, subject, and tutor persona",
+        "Chat with message bubbles, timestamp display",
+        "AI never gives direct answers - uses Socratic questioning",
+        "Vocabulary calibrated to student's grade level",
+        "Context includes up to 10 most recent messages + last 5 conversation summaries",
+        "Suggestion chips render after each AI response for follow-up",
+        "Model selection (GPT-4o, GPT-4o Mini, Claude 3.5 Sonnet, Claude 3.5 Haiku, Gemini 2.0 Flash) persisted in localStorage"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-012",
+      "title": "Tutor Learning Profile",
+      "description": "As a student, I want the AI tutor to remember my learning style across sessions so tutoring improves over time.",
+      "acceptanceCriteria": [
+        "One `student_learning_profile` per student, shared across all conversations",
+        "Auto-created on first tutor session",
+        "AI responses include `profile_updates`: learning insights, observed strengths, areas to work on, handoff notes",
+        "Updates are non-destructive (append to arrays, concatenate strings)",
+        "Profile fields: learning_style_notes, strengths[], areas_for_growth[], preferred_explanation_style, common_misconceptions[], motivation_factors, tutor_handoff_notes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-013",
+      "title": "Tutor File Attachments",
+      "description": "As a student, I want to upload images and PDFs to tutor messages so the AI can analyze my work.",
+      "acceptanceCriteria": [
+        "File upload button in chat input area",
+        "Accepted types: images (PNG/JPG) and PDFs",
+        "Uploaded files display as chips in the input area before sending",
+        "Files sent to AI as `file_urls` for multimodal analysis",
+        "Files uploaded via `UploadFile` integration"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-014",
+      "title": "Schoology Screenshot Import",
+      "description": "As a student, I want to upload Schoology screenshots and have AI extract my assignments automatically.",
+      "acceptanceCriteria": [
+        "Drag-and-drop or click-to-upload for PNG/JPG files (multiple supported)",
+        "AI extracts: title, class, subject, description, due date (ISO, assumes 2026 if year absent), teacher name/email, priority",
+        "New `Class` records auto-created for unseen class names (case-insensitive match)",
+        "Assignments deduplicated by title + due_date",
+        "Imported items tagged with `source: \"schoology_import\"`",
+        "Post-import report: count imported, classes created, duplicates skipped"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-015",
+      "title": "Gamification Points, Levels, and Streaks",
+      "description": "As a student, I want to earn points and see my level and streak so I stay motivated.",
+      "acceptanceCriteria": [
+        "10 points per completed assignment",
+        "Level = `floor(points / 100) + 1`",
+        "Streak: consecutive days with at least one completion, max display 30 days",
+        "All values recalculated from assignment data (not cached)",
+        "Displayed on Dashboard GamificationCard"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-016",
+      "title": "Achievement Badges",
+      "description": "As a student, I want to earn badges for milestones so I have goals to work toward.",
+      "acceptanceCriteria": [
+        "4 badges: Beginner (5 completed), Dedicated (20), On Fire (3-day streak), Champion (50)",
+        "Auto-unlocked on render when conditions are met",
+        "`unlocked_date` recorded in `achievement` table",
+        "Badge grid displayed on Dashboard and Rewards page"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-017",
+      "title": "Parent Achievement Rewards",
+      "description": "As a parent, I want to set custom rewards for each achievement so I can motivate my child.",
+      "acceptanceCriteria": [
+        "Parents can set reward text per achievement on `/Rewards` page",
+        "Reward text stored in `achievement.reward` field via upsert",
+        "When badge is unlocked and has reward, shows \"Reward Earned!\" badge + reward text",
+        "Students see rewards read-only; only parents can edit"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-018",
+      "title": "Email Reminders",
+      "description": "As a student, I want to receive email reminders for overdue and upcoming assignments so I don't miss deadlines.",
+      "acceptanceCriteria": [
+        "Reminders page groups: Overdue (past due, not completed) and Upcoming (within 72 hours)",
+        "Per-assignment \"Send Reminder\" button",
+        "\"Email All\" sends single summary digest email",
+        "HTML-formatted email with title, subject, due date, description",
+        "Sent to current user's email",
+        "Success/error toast after send"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-019",
+      "title": "Homework Comments",
+      "description": "As a student or parent, I want to comment on assignments so we can communicate about homework.",
+      "acceptanceCriteria": [
+        "Threaded comments visible in expanded assignment row",
+        "Shows author name, account type badge (Parent/Student), relative timestamp",
+        "Auto-refreshes every 30 seconds",
+        "Enter submits, Shift+Enter for newline",
+        "Users can delete only their own comments",
+        "Accessible to student + all linked parents",
+        "Author profile joined from `profiles` table"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-020",
+      "title": "Parent Collaboration Invites",
+      "description": "As a parent, I want to invite another parent to collaborate on my child's account so co-parents can stay informed.",
+      "acceptanceCriteria": [
+        "\"Invite a Parent\" button in header (parent accounts only)",
+        "Generates shareable link with 48-character hex token, 7-day expiry",
+        "Link format: `{origin}/accept-invite?token={token}`",
+        "Copy-to-clipboard functionality",
+        "Invite history with pending/accepted/revoked badges and timestamps",
+        "Owner can revoke pending invites"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-021",
+      "title": "Accept Collaboration Invite",
+      "description": "As an invited parent, I want to accept an invite link so I can view and manage a shared student.",
+      "acceptanceCriteria": [
+        "Visiting invite link saves token to localStorage if not authenticated",
+        "After login/register, auto-redirects to accept",
+        "Supabase RPC validates: not expired, not revoked, not self-invite, no existing access",
+        "Inserts `student_parent` record with `role: 'collaborator'`",
+        "Expired/revoked tokens show clear error messages",
+        "Collaborators see same student data as owner"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-022",
+      "title": "Admin Settings",
+      "description": "As a parent, I want to manage API keys, linked users, and my password from a settings page.",
+      "acceptanceCriteria": [
+        "Admin page accessible only to parent accounts",
+        "API key: store/update (encrypted via `update_api_key` RPC), retrieve masked via `get_api_key` RPC",
+        "API key: store/update (encrypted via `update_api_key` RPC), retrieve masked via `get_api_key` RPC",
+        "Linked users: view all parents per child (owner + collaborators), remove collaborators",
+        "Cannot remove self or the student user",
+        "Password change via `supabase.auth.updateUser()`",
+        "Removing a collaborator immediately revokes their access"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-023",
+      "title": "Glassmorphism UI Theme",
+      "description": "As a user, I want a premium frosted-glass visual design with violet/purple accents throughout the app.",
+      "acceptanceCriteria": [
+        "Glass utility classes: `.glass-card`, `.glass-nav`, `.glass-input`, `.btn-premium`, `.studio-bg`",
+        "All shadcn/ui primitives updated: card, input, dialog, tabs, dropdown, progress, badge, button",
+        "Violet gradient for primary actions, amber/gold kept for rewards/gamification",
+        "`prefers-reduced-motion` disables animations and blur",
+        "Mobile `backdrop-blur` capped for performance",
+        "Consistent glassmorphism across all 13 pages and 15+ components"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    },
+    {
+      "id": "US-024",
+      "title": "Responsive Navigation",
+      "description": "As a mobile user, I want a responsive navigation with hamburger menu so I can access all pages on small screens.",
+      "acceptanceCriteria": [
+        "Sticky glass-nav header with logo, desktop nav links, user dropdown",
+        "Mobile: hamburger icon opens glass-panel sidebar with all nav items",
+        "Student selector visible in header for parents",
+        "Active nav item highlighted with violet accent",
+        "User dropdown: account type label, admin settings shortcut (parent), logout"
+      ],
+      "priority": 4,
+      "passes": false,
+      "labels": [],
+      "dependsOn": []
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-02-18T09:35:37.542Z",
+    "version": "1.0.0",
+    "sourcePrd": "tasks/prd.md",
+    "updatedAt": "2026-02-18T10:06:00.400Z"
+  }
+}
