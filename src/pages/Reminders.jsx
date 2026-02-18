@@ -114,13 +114,13 @@ export default function Reminders() {
       >
         <div
           className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
-            isOverdue ? "bg-rose-100" : "bg-amber-50"
+            isOverdue ? "bg-rose-100" : "bg-violet-50"
           }`}
         >
           {isOverdue ? (
             <AlertTriangle className="h-5 w-5 text-rose-500" />
           ) : (
-            <Clock className="h-5 w-5 text-amber-500" />
+            <Clock className="h-5 w-5 text-violet-500" />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -132,7 +132,7 @@ export default function Reminders() {
             <span className="text-slate-200">·</span>
             <span
               className={`text-xs font-medium ${
-                isOverdue ? "text-rose-500" : "text-amber-500"
+                isOverdue ? "text-rose-500" : "text-violet-500"
               }`}
             >
               {isOverdue ? "Overdue" : moment(hw.due_date).fromNow()}
@@ -172,7 +172,7 @@ export default function Reminders() {
           <Button
             onClick={sendAllReminders}
             disabled={sentAll}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm"
           >
             {sentAll ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -203,7 +203,7 @@ export default function Reminders() {
       <Card className="border-slate-100 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-slate-700">
-            <Bell className="h-4 w-4 text-amber-500" />
+            <Bell className="h-4 w-4 text-violet-500" />
             Due Within 72 Hours ({upcoming.length})
           </CardTitle>
         </CardHeader>

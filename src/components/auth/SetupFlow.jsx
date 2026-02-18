@@ -40,10 +40,10 @@ export default function SetupFlow({ user, onComplete }) {
 
   if (step === 1) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50/50 to-slate-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="text-center pb-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mx-auto mb-4">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
               <GraduationCap className="h-8 w-8 text-white" />
             </div>
             <CardTitle className="text-2xl font-bold">Welcome to StudyTrack!</CardTitle>
@@ -92,7 +92,7 @@ export default function SetupFlow({ user, onComplete }) {
 
   if (step === 2 && accountType === "student") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50/50 to-slate-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader>
             <CardTitle className="text-xl">Student Profile</CardTitle>
@@ -132,7 +132,7 @@ export default function SetupFlow({ user, onComplete }) {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-amber-600">
+              <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600">
                 Complete Setup
               </Button>
             </form>
@@ -144,7 +144,7 @@ export default function SetupFlow({ user, onComplete }) {
 
   if (step === 2 && accountType === "parent") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50/50 to-slate-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-xl shadow-xl">
           <CardHeader>
             <CardTitle className="text-xl">Add Your Children</CardTitle>
@@ -214,7 +214,7 @@ export default function SetupFlow({ user, onComplete }) {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Another Child
               </Button>
-              <Button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-amber-600">
+              <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600">
                 Complete Setup
               </Button>
             </form>

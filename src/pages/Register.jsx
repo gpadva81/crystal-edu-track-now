@@ -47,10 +47,10 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50/50 to-slate-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center pb-4">
-          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mx-auto mb-4">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
             <GraduationCap className="h-8 w-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
@@ -100,7 +100,7 @@ export default function Register() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-600"
+              className="w-full bg-gradient-to-r from-violet-600 to-purple-600"
               disabled={loading}
             >
               {loading ? (
@@ -112,7 +112,7 @@ export default function Register() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-amber-600 hover:text-amber-700 font-medium hover:underline"
+                className="text-violet-600 hover:text-violet-700 font-medium hover:underline"
               >
                 Sign in
               </Link>

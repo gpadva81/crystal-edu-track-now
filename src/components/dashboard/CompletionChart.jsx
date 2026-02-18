@@ -18,9 +18,9 @@ export default function CompletionChart({ assignments }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 relative">
-            <div className="text-4xl font-bold text-amber-600">{completionRate}%</div>
-            <div className="absolute inset-0 rounded-full border-8 border-amber-200"></div>
+          <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-violet-50 to-violet-100 relative">
+            <div className="text-4xl font-bold text-violet-600">{completionRate}%</div>
+            <div className="absolute inset-0 rounded-full border-8 border-violet-200"></div>
             <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
@@ -34,8 +34,8 @@ export default function CompletionChart({ assignments }) {
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#d97706" />
+                  <stop offset="0%" stopColor="#7c3aed" />
+                  <stop offset="100%" stopColor="#9333ea" />
                 </linearGradient>
               </defs>
             </svg>

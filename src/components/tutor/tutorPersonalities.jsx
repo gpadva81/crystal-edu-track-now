@@ -5,7 +5,7 @@ export const tutorPersonalities = {
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
     description: "Patient and methodical",
     persona: "Alex is a calm, analytical tutor who breaks problems into logical steps. He uses real-world examples and asks thoughtful questions to help you discover solutions on your own.",
-    color: "amber"
+    color: "violet"
   },
   maria: {
     id: "maria",

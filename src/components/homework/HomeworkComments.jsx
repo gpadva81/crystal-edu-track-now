@@ -71,7 +71,7 @@ export default function HomeworkComments({ homeworkId }) {
       return (
         <Badge
           variant="outline"
-          className="text-[10px] bg-amber-50 text-amber-600 border-amber-200"
+          className="text-[10px] bg-violet-50 text-violet-600 border-violet-200"
         >
           Parent
         </Badge>
@@ -154,13 +154,13 @@ export default function HomeworkComments({ homeworkId }) {
           onKeyDown={handleKeyDown}
           placeholder="Add a comment..."
           rows={1}
-          className="flex-1 min-h-[36px] max-h-20 resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400"
+          className="flex-1 min-h-[36px] max-h-20 resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
         />
         <Button
           type="submit"
           size="sm"
           disabled={!newComment.trim() || addMutation.isPending}
-          className="h-9 px-3 bg-amber-500 hover:bg-amber-600 text-white shrink-0"
+          className="h-9 px-3 bg-violet-600 hover:bg-violet-700 text-white shrink-0"
         >
           {addMutation.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

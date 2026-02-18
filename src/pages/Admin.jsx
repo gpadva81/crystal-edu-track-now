@@ -82,7 +82,7 @@ function ApiKeySection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Key className="h-4 w-4 text-amber-500" />
+          <Key className="h-4 w-4 text-violet-500" />
           API Key
         </CardTitle>
         <p className="text-sm text-slate-500">
@@ -123,7 +123,7 @@ function ApiKeySection() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
               >
                 {saving ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -265,7 +265,7 @@ function UserManagementSection() {
     }
     if (link.role === "owner") {
       return (
-        <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-600 border-amber-200">
+        <Badge variant="outline" className="text-[10px] bg-violet-50 text-violet-600 border-violet-200">
           Owner
         </Badge>
       );
@@ -282,7 +282,7 @@ function UserManagementSection() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Users className="h-4 w-4 text-amber-500" />
+            <Users className="h-4 w-4 text-violet-500" />
             Linked Users
           </CardTitle>
           <p className="text-sm text-slate-500">
@@ -304,7 +304,7 @@ function UserManagementSection() {
               {students.map((student) => (
                 <div key={student.id}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center text-xs font-semibold text-amber-700">
+                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-200 to-violet-300 flex items-center justify-center text-xs font-semibold text-violet-700">
                       {student.name?.[0]?.toUpperCase()}
                     </div>
                     <div>
@@ -440,7 +440,7 @@ function ChangePasswordSection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Lock className="h-4 w-4 text-amber-500" />
+          <Lock className="h-4 w-4 text-violet-500" />
           Change Password
         </CardTitle>
         <p className="text-sm text-slate-500">
@@ -487,7 +487,7 @@ function ChangePasswordSection() {
           <Button
             type="submit"
             disabled={saving || !newPassword || !confirmPassword}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Update Password
@@ -509,7 +509,7 @@ export default function Admin() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <Shield className="h-6 w-6 text-amber-500" />
+          <Shield className="h-6 w-6 text-violet-500" />
           Admin Settings
         </h1>
         <p className="text-sm text-slate-500 mt-1">

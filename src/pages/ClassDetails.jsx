@@ -191,7 +191,7 @@ export default function ClassDetails() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-amber-500" />
+              <GraduationCap className="h-5 w-5 text-violet-500" />
               Class Information
             </CardTitle>
           </CardHeader>
@@ -318,7 +318,7 @@ export default function ClassDetails() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-500">Active</span>
-              <Badge className="bg-amber-100 text-amber-700">{active}</Badge>
+              <Badge className="bg-violet-100 text-violet-700">{active}</Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-500">Completed</span>
@@ -345,7 +345,7 @@ export default function ClassDetails() {
                 setEditingHomework(null);
                 setShowHomeworkForm(true);
               }}
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Assignment

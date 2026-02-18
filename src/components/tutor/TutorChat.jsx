@@ -344,10 +344,10 @@ As you interact, if you notice insights about their learning style, update the p
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b border-slate-100 px-4 py-3 bg-slate-50/50">
+      <div className="border-b border-slate-100 px-4 py-3 bg-white/40 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-4 mb-2">
           <div className="flex items-center gap-2 text-sm text-slate-600">
-            <Sparkles className="h-4 w-4 text-amber-500" />
+            <Sparkles className="h-4 w-4 text-violet-500" />
             <span className="font-medium">AI Model:</span>
           </div>
           <Select value={selectedModel} onValueChange={handleModelChange}>
@@ -365,7 +365,7 @@ As you interact, if you notice insights about their learning style, update the p
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-slate-600">
-            <User className="h-4 w-4 text-amber-500" />
+            <User className="h-4 w-4 text-violet-500" />
             <span className="font-medium">Tutor:</span>
           </div>
           <Select value={selectedTutorId} onValueChange={handleTutorChange}>
@@ -385,8 +385,8 @@ As you interact, if you notice insights about their learning style, update the p
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
         {messages.length === 0 && initializing && (
           <div className="flex flex-col items-center justify-center h-full text-center py-16">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mb-4">
-              <Loader2 className="h-8 w-8 text-amber-600 animate-spin" />
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center mb-4">
+              <Loader2 className="h-8 w-8 text-violet-600 animate-spin" />
             </div>
             <h3 className="text-lg font-bold text-slate-700">Getting ready...</h3>
             <p className="text-sm text-slate-400 mt-2 max-w-xs">
@@ -396,8 +396,8 @@ As you interact, if you notice insights about their learning style, update the p
         )}
         {messages.length === 0 && !initializing && (
           <div className="flex flex-col items-center justify-center h-full text-center py-16 px-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mb-4">
-              <Sparkles className="h-8 w-8 text-amber-600" />
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center mb-4">
+              <Sparkles className="h-8 w-8 text-violet-600" />
             </div>
             <h3 className="text-lg font-bold text-slate-700">Meet {tutor.name}</h3>
             <p className="text-sm text-slate-500 mt-1 max-w-xs font-medium">
@@ -414,7 +414,7 @@ As you interact, if you notice insights about their learning style, update the p
                     setInput(prompt);
                     document.querySelector('input[placeholder*="Ask a question"]')?.focus();
                   }}
-                  className="px-4 py-2 rounded-full bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-sm text-slate-600 transition-colors"
+                  className="px-4 py-2 rounded-full bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-300 text-sm text-slate-600 transition-colors"
                 >
                   {prompt}
                 </button>
@@ -484,7 +484,7 @@ As you interact, if you notice insights about their learning style, update the p
             </div>
             <div className="bg-white border border-slate-100 rounded-2xl px-5 py-4 shadow-sm">
               <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+                <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
                 <span className="text-base text-slate-400">Thinking...</span>
               </div>
             </div>
@@ -505,7 +505,7 @@ As you interact, if you notice insights about their learning style, update the p
                   <button
                     key={idx}
                     onClick={() => sendMessage(suggestion)}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200 hover:border-amber-300 text-sm text-amber-800 font-medium transition-all shadow-sm hover:shadow-md"
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-50 to-purple-50 hover:from-violet-100 hover:to-purple-100 border border-violet-200 hover:border-violet-300 text-sm text-violet-800 font-medium transition-all shadow-sm hover:shadow-md"
                   >
                     {suggestion}
                   </button>
@@ -524,13 +524,13 @@ As you interact, if you notice insights about their learning style, update the p
             {uploadedFiles.map((file, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs"
+                className="flex items-center gap-2 px-3 py-1.5 bg-violet-50 border border-violet-200 rounded-lg text-xs"
               >
-                <ImageIcon className="h-3 w-3 text-amber-600" />
-                <span className="text-amber-700 max-w-[150px] truncate">{file.name}</span>
+                <ImageIcon className="h-3 w-3 text-violet-600" />
+                <span className="text-violet-700 max-w-[150px] truncate">{file.name}</span>
                 <button
                   onClick={() => removeFile(idx)}
-                  className="text-amber-600 hover:text-amber-800"
+                  className="text-violet-600 hover:text-violet-800"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -571,13 +571,13 @@ As you interact, if you notice insights about their learning style, update the p
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question about your homework..."
-            className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20"
+            className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20"
             disabled={loading}
           />
           <Button
             type="submit"
             disabled={!input.trim() || loading}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm px-4 shrink-0"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm px-4 shrink-0"
           >
             <Send className="h-4 w-4" />
           </Button>

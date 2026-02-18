@@ -62,15 +62,15 @@ export default function WeeklyCalendar({ assignments, onStatusChange }) {
               key={idx}
               className={`rounded-xl border-2 transition-all flex flex-col ${
                 isToday
-                  ? "border-amber-400 bg-amber-50/50"
+                  ? "border-violet-400 bg-violet-50/50"
                   : "border-slate-100 bg-white"
               }`}
             >
-              <div className={`p-3 border-b ${isToday ? "border-amber-200 bg-amber-100/50" : "border-slate-100"}`}>
+              <div className={`p-3 border-b ${isToday ? "border-violet-200 bg-violet-100/50" : "border-slate-100"}`}>
                 <div className="text-xs font-semibold text-slate-500 uppercase">
                   {day.format("ddd")}
                 </div>
-                <div className={`text-lg font-bold ${isToday ? "text-amber-700" : isPast ? "text-slate-400" : "text-slate-700"}`}>
+                <div className={`text-lg font-bold ${isToday ? "text-violet-700" : isPast ? "text-slate-400" : "text-slate-700"}`}>
                   {day.format("D")}
                 </div>
                 {dayAssignments.length > 0 && (

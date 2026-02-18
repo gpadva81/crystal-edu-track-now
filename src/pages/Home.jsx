@@ -31,7 +31,7 @@ export default function Home() {
       icon: Sparkles,
       title: "AI Tutor Assistance",
       description: "Get personalized help with your homework. Our AI tutor guides you through problems step-by-step.",
-      gradient: "from-amber-500 to-amber-600",
+      gradient: "from-violet-500 to-violet-600",
     },
     {
       icon: Users,
@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-rose-50 to-purple-50 py-20 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 py-20 px-4">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDAsIDAsIDAsIDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
         
         <div className="max-w-6xl mx-auto relative">
@@ -79,14 +79,14 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <Badge className="mb-4 bg-white/80 backdrop-blur-sm text-amber-600 border-amber-200 px-4 py-1">
+            <Badge className="mb-4 bg-white/80 backdrop-blur-sm text-violet-600 border-violet-200 px-4 py-1">
               <Zap className="h-3 w-3 mr-1" />
               Smart Homework Management
             </Badge>
             
             <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-6 leading-tight">
               Transform Your
-              <span className="block bg-gradient-to-r from-amber-500 via-rose-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
                 Academic Journey
               </span>
             </h1>
@@ -100,7 +100,7 @@ export default function Home() {
               <Link to={createPageUrl("Dashboard")}>
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all text-lg px-8"
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all text-lg px-8"
                 >
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -110,7 +110,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-slate-200 hover:border-amber-200 hover:bg-amber-50 text-lg px-8"
+                  className="border-2 border-slate-200 hover:border-violet-200 hover:bg-violet-50 text-lg px-8"
                 >
                   Try AI Tutor
                   <Sparkles className="ml-2 h-5 w-5" />
@@ -128,7 +128,7 @@ export default function Home() {
           >
             {[
               { icon: CheckCircle2, text: "Track Assignments", color: "blue" },
-              { icon: Sparkles, text: "AI Homework Help", color: "amber" },
+              { icon: Sparkles, text: "AI Homework Help", color: "violet" },
               { icon: Calendar, text: "Never Miss Deadlines", color: "purple" },
             ].map((item, i) => (
               <Card key={i} className="bg-white/80 backdrop-blur-sm border-slate-100 hover:shadow-lg transition-shadow">
@@ -145,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white border-y border-slate-100">
+      <section className="py-12 bg-white/40 backdrop-blur-sm border-y border-white/30">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, i) => (
@@ -157,8 +157,8 @@ export default function Home() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mx-auto mb-3">
-                  <stat.icon className="h-6 w-6 text-amber-600" />
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center mx-auto mb-3">
+                  <stat.icon className="h-6 w-6 text-violet-600" />
                 </div>
                 <div className="text-3xl font-bold text-slate-800 mb-1">{stat.value}</div>
                 <div className="text-sm text-slate-500">{stat.label}</div>
@@ -178,7 +178,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="mb-4 bg-amber-50 text-amber-600 border-amber-200 px-4 py-1">
+            <Badge className="mb-4 bg-violet-50 text-violet-600 border-violet-200 px-4 py-1">
               Everything You Need
             </Badge>
             <h2 className="text-4xl font-bold text-slate-800 mb-4">
@@ -218,7 +218,7 @@ export default function Home() {
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-amber-50 to-rose-50">
+      <section className="py-20 px-4 bg-gradient-to-br from-violet-50 to-purple-50">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -288,7 +288,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mx-auto mb-6">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
               <GraduationCap className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -300,7 +300,7 @@ export default function Home() {
             <Link to={createPageUrl("Dashboard")}>
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all text-lg px-8"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all text-lg px-8"
               >
                 Start Free Today
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -314,7 +314,7 @@ export default function Home() {
       <footer className="bg-slate-900 py-8 px-4 border-t border-slate-800">
         <div className="max-w-6xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
             <span className="text-lg font-bold text-white">StudyTrack</span>

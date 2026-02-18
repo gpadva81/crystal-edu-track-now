@@ -31,3 +31,4 @@ dist-ssr
 *.png
 .playwright-mcp/
 base44Client.js
+.vercel

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function StatsCard({ title, value, icon: Icon, color, subtitle }) {
   const colorMap = {
-    amber: "from-amber-400 to-amber-500",
+    violet: "from-violet-500 to-purple-500",
     blue: "from-blue-400 to-blue-500",
     green: "from-emerald-400 to-emerald-500",
     red: "from-rose-400 to-rose-500",
@@ -14,7 +14,7 @@ export default function StatsCard({ title, value, icon: Icon, color, subtitle })
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl bg-white border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow"
+      className="relative overflow-hidden glass-card p-6 hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between">
         <div>
@@ -27,7 +27,7 @@ export default function StatsCard({ title, value, icon: Icon, color, subtitle })
           )}
         </div>
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${colorMap[color] || colorMap.amber}`}
+          className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${colorMap[color] || colorMap.violet}`}
         >
           <Icon className="h-5 w-5 text-white" />
         </div>

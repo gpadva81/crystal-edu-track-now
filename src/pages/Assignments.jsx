@@ -122,7 +122,7 @@ export default function Assignments() {
             setEditing(null);
             setShowForm(true);
           }}
-          className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm"
+          className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add New

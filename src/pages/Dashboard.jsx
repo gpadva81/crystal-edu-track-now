@@ -56,7 +56,7 @@ export default function Dashboard() {
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm"
+          className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Assignment
@@ -68,7 +68,7 @@ export default function Dashboard() {
           title="Active"
           value={active.length}
           icon={BookOpen}
-          color="amber"
+          color="violet"
           subtitle={`${dueToday.length} due today`}
         />
         <StatsCard
@@ -97,7 +97,7 @@ export default function Dashboard() {
         <GamificationCard assignments={assignments} />
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+      <div className="glass-card p-6">
         <div className="mb-6">
           <h2 className="text-lg font-bold text-slate-700">Weekly Overview</h2>
           <p className="text-xs text-slate-400 mt-0.5">

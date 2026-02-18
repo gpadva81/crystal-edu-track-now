@@ -101,7 +101,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
-              className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20"
+              className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20"
             />
           </div>
 
@@ -186,7 +186,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
               value={form.due_date}
               onChange={(e) => setForm({ ...form, due_date: e.target.value })}
               required
-              className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20"
+              className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20"
             />
           </div>
 
@@ -200,7 +200,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
-              className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20 resize-none"
+              className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20 resize-none"
             />
           </div>
 
@@ -213,7 +213,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={2}
-              className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20 resize-none"
+              className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20 resize-none"
             />
           </div>
 
@@ -226,7 +226,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
               value={form.teacher_feedback}
               onChange={(e) => setForm({ ...form, teacher_feedback: e.target.value })}
               rows={2}
-              className="border-slate-200 focus:border-amber-400 focus:ring-amber-400/20 resize-none"
+              className="border-slate-200 focus:border-violet-400 focus:ring-violet-400/20 resize-none"
             />
           </div>
 
@@ -240,7 +240,7 @@ export default function HomeworkForm({ open, onOpenChange, onSubmit, editingHome
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm"
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm"
             >
               {editingHomework ? "Update" : "Add Assignment"}
             </Button>

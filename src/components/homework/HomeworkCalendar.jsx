@@ -86,13 +86,13 @@ export default function HomeworkCalendar({ assignments, onEdit, onStatusChange }
               key={i}
               className={`min-h-[120px] ${
                 !isCurrentMonth ? "opacity-40" : ""
-              } ${isDayToday ? "ring-2 ring-amber-500" : ""}`}
+              } ${isDayToday ? "ring-2 ring-violet-500" : ""}`}
             >
               <CardContent className="p-2">
                 <div
                   className={`text-sm font-semibold mb-2 ${
                     isDayToday
-                      ? "bg-amber-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      ? "bg-violet-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                       : "text-slate-700"
                   }`}
                 >

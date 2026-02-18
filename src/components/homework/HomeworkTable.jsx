@@ -193,7 +193,7 @@ export default function HomeworkTable({
                           e.stopPropagation();
                           onOpenTutor(hw);
                         }}
-                        className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                         size="sm"
                       >
                         <Sparkles className="h-4 w-4 mr-2" />

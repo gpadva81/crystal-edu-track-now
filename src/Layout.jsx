@@ -54,29 +54,21 @@ function LayoutContent({ children, currentPageName, user }) {
 
   if (!currentStudent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      <div className="min-h-screen flex items-center justify-center studio-bg">
+        <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <style>{`
-        :root {
-          --accent: #f59e0b;
-          --accent-light: #fef3c7;
-        }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-      `}</style>
-
+    <div className="min-h-screen studio-bg">
       {/* Top bar */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+      <header className="sticky top-0 z-50 glass-nav">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-slate-50"
+              className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-violet-50"
             >
               {mobileOpen ? (
                 <X className="h-5 w-5 text-slate-600" />
@@ -85,12 +77,12 @@ function LayoutContent({ children, currentPageName, user }) {
               )}
             </button>
             <Link to={createPageUrl('Home')} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-              <div className="relative h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center shadow-lg">
+              <div className="relative h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 via-purple-600 to-violet-700 flex items-center justify-center shadow-lg shadow-violet-500/25">
                 <div className="absolute inset-0 bg-white/20 rounded-xl"></div>
                 <GraduationCap className="h-5 w-5 text-white relative z-10" />
                 <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 border-2 border-white"></div>
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-slate-800 via-amber-600 to-slate-800 bg-clip-text text-transparent tracking-tight hidden sm:block">
+              <span className="text-lg font-bold bg-gradient-to-r from-violet-700 via-purple-600 to-violet-700 bg-clip-text text-transparent tracking-tight hidden sm:block">
                 StudyTrack
               </span>
             </Link>
@@ -106,11 +98,11 @@ function LayoutContent({ children, currentPageName, user }) {
                   to={createPageUrl(item.page)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     active
-                      ? "bg-amber-50 text-amber-700"
-                      : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                      ? "bg-violet-500/10 text-violet-700"
+                      : "text-slate-500 hover:text-violet-700 hover:bg-violet-50"
                   }`}
                 >
-                  <item.icon className={`h-4 w-4 ${active ? "text-amber-500" : ""}`} />
+                  <item.icon className={`h-4 w-4 ${active ? "text-violet-500" : ""}`} />
                   {item.name}
                 </Link>
               );
@@ -125,7 +117,7 @@ function LayoutContent({ children, currentPageName, user }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setInviteOpen(true)}
-                className="h-8 w-8 text-slate-500 hover:text-amber-600 hover:bg-amber-50"
+                className="h-8 w-8 text-slate-500 hover:text-violet-600 hover:bg-violet-50"
                 title="Invite a parent to collaborate"
               >
                 <UserPlus className="h-4 w-4" />
@@ -135,7 +127,7 @@ function LayoutContent({ children, currentPageName, user }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 hidden sm:flex">
-                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center">
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-sm">
                     <User className="h-4 w-4 text-white" />
                   </div>
                   <div className="text-left">
@@ -151,7 +143,7 @@ function LayoutContent({ children, currentPageName, user }) {
                   <p className="text-sm font-semibold text-slate-700">{user?.full_name}</p>
                   <p className="text-xs text-slate-500">{user?.email}</p>
                   {isParent && currentStudent && (
-                    <p className="text-xs text-amber-600 mt-1">
+                    <p className="text-xs text-violet-600 mt-1">
                       Viewing: {currentStudent.name}'s profile
                     </p>
                   )}
@@ -186,7 +178,7 @@ function LayoutContent({ children, currentPageName, user }) {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
           <div
-            className="absolute top-16 left-0 right-0 bg-white border-b border-slate-200 shadow-lg p-4 space-y-1"
+            className="absolute top-16 left-0 right-0 glass-panel border-b shadow-lg p-4 space-y-1"
             onClick={(e) => e.stopPropagation()}
           >
             {NAV_ITEMS.map((item) => {
@@ -198,11 +190,11 @@ function LayoutContent({ children, currentPageName, user }) {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     active
-                      ? "bg-amber-50 text-amber-700"
-                      : "text-slate-500 hover:bg-slate-50"
+                      ? "bg-violet-500/10 text-violet-700"
+                      : "text-slate-500 hover:bg-violet-50"
                   }`}
                 >
-                  <item.icon className={`h-4 w-4 ${active ? "text-amber-500" : ""}`} />
+                  <item.icon className={`h-4 w-4 ${active ? "text-violet-500" : ""}`} />
                   {item.name}
                 </Link>
               );
@@ -228,8 +220,8 @@ export default function Layout({ children, currentPageName }) {
 
   if (isLoadingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      <div className="min-h-screen flex items-center justify-center studio-bg">
+        <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
       </div>
     );
   }

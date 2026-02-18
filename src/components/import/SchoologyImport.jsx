@@ -149,7 +149,7 @@ Return a JSON array of assignments. Be thorough and extract all visible assignme
         </p>
 
         <div 
-          className="rounded-xl border-2 border-dashed border-slate-200 hover:border-amber-300 transition-colors bg-slate-50/50 p-8"
+          className="rounded-xl border-2 border-dashed border-slate-200 hover:border-violet-300 transition-colors bg-slate-50/50 p-8"
           onDrop={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -165,17 +165,17 @@ Return a JSON array of assignments. Be thorough and extract all visible assignme
           }}
           onDragEnter={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.add('border-amber-400', 'bg-amber-50/30');
+            e.currentTarget.classList.add('border-violet-400', 'bg-violet-50/30');
           }}
           onDragLeave={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.remove('border-amber-400', 'bg-amber-50/30');
+            e.currentTarget.classList.remove('border-violet-400', 'bg-violet-50/30');
           }}
         >
           <div className="flex flex-col items-center text-center">
             <Upload className="h-8 w-8 text-slate-300 mb-3" />
             <label className="cursor-pointer">
-              <span className="text-sm font-semibold text-amber-600 hover:text-amber-700 transition">
+              <span className="text-sm font-semibold text-violet-600 hover:text-violet-700 transition">
                 Drag & drop or click to upload
               </span>
               <input

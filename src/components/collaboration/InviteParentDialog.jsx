@@ -86,7 +86,7 @@ export default function InviteParentDialog({ open, onOpenChange }) {
 
   const statusBadge = (status) => {
     const styles = {
-      pending: "bg-amber-50 text-amber-700 border-amber-200",
+      pending: "bg-violet-50 text-violet-700 border-violet-200",
       accepted: "bg-emerald-50 text-emerald-700 border-emerald-200",
       revoked: "bg-slate-50 text-slate-500 border-slate-200",
     };
@@ -102,7 +102,7 @@ export default function InviteParentDialog({ open, onOpenChange }) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <UserPlus className="h-5 w-5 text-amber-500" />
+            <UserPlus className="h-5 w-5 text-violet-500" />
             Invite a Parent
           </DialogTitle>
           <DialogDescription>
@@ -118,7 +118,7 @@ export default function InviteParentDialog({ open, onOpenChange }) {
           <Button
             onClick={generateInvite}
             disabled={generating}
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+            className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             {generating ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

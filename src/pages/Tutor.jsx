@@ -92,11 +92,11 @@ export default function Tutor() {
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-6">
       {/* Sidebar */}
-      <div className="w-72 shrink-0 flex flex-col bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="w-72 shrink-0 flex flex-col glass-card rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-slate-100">
           <Button
             onClick={() => setShowNew(true)}
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+            className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Chat
@@ -116,7 +116,7 @@ export default function Tutor() {
                 key={c.id}
                 className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 cursor-pointer transition-all ${
                   activeConvo?.id === c.id
-                    ? "bg-amber-50 border border-amber-200"
+                    ? "bg-violet-50 border border-violet-200"
                     : "hover:bg-slate-50 border border-transparent"
                 }`}
                 onClick={() => setActiveConvo(c)}
@@ -124,14 +124,14 @@ export default function Tutor() {
                 <div
                   className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
                     activeConvo?.id === c.id
-                      ? "bg-amber-100"
+                      ? "bg-violet-100"
                       : "bg-slate-100"
                   }`}
                 >
                   <MessageCircle
                     className={`h-4 w-4 ${
                       activeConvo?.id === c.id
-                        ? "text-amber-600"
+                        ? "text-violet-600"
                         : "text-slate-400"
                     }`}
                   />
@@ -160,7 +160,7 @@ export default function Tutor() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+      <div className="flex-1 glass-card rounded-2xl overflow-hidden flex flex-col">
         {activeConvo ? (
           <TutorChat
             conversation={activeConvo}
@@ -172,8 +172,8 @@ export default function Tutor() {
           />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mb-6">
-              <BookOpen className="h-10 w-10 text-amber-600" />
+            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center mb-6">
+              <BookOpen className="h-10 w-10 text-violet-600" />
             </div>
             <h2 className="text-xl font-bold text-slate-700">AI Homework Tutor</h2>
             <p className="text-sm text-slate-400 mt-2 max-w-sm">
@@ -182,7 +182,7 @@ export default function Tutor() {
             </p>
             <Button
               onClick={() => setShowNew(true)}
-              className="mt-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+              className="mt-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Start Tutoring Session
@@ -248,7 +248,7 @@ export default function Tutor() {
                     onClick={() => setSelectedTutor(tutor.id)}
                     className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${
                       selectedTutor === tutor.id
-                        ? "border-amber-500 bg-amber-50"
+                        ? "border-violet-500 bg-violet-50"
                         : "border-slate-200 hover:border-slate-300"
                     }`}
                   >
@@ -271,7 +271,7 @@ export default function Tutor() {
               </Button>
               <Button
                 type="submit"
-                className="bg-gradient-to-r from-amber-500 to-amber-600 text-white"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 text-white"
               >
                 Start Session
               </Button>

@@ -49,17 +49,17 @@ export default function AcceptInvite() {
 
   if (isLoadingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50/50 to-slate-50">
+        <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50/50 to-slate-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center pb-4">
-          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center mx-auto mb-4">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
             <GraduationCap className="h-8 w-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">
@@ -75,7 +75,7 @@ export default function AcceptInvite() {
               </p>
               <div className="space-y-2">
                 <Link to="/login" className="block">
-                  <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
                     Sign In
                   </Button>
                 </Link>
@@ -117,7 +117,7 @@ export default function AcceptInvite() {
               <Button
                 onClick={handleAccept}
                 disabled={status === "loading"}
-                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
               >
                 {status === "loading" ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
