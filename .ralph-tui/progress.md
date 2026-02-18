@@ -174,3 +174,24 @@ after each iteration and it's included in prompts for context.
   - The `ClassDetails` page has its own `openTutor` and `sendReminder` implementations (duplicated from `Assignments.jsx`) rather than sharing a utility. This is acceptable given each page manages its own mutations and query keys.
   - The grade inline-edit pattern (toggle between display and input using `editingGrade` state) is unique to this page — other edits use dialog forms.
 ---
+
+## 2026-02-18 - US-011
+- **What was implemented**: The AI Tutor Chat was ~95% complete from prior iterations. The only gap was missing timestamp display on chat message bubbles (AC3). Added a `formatTimestamp` helper and rendered timestamps below each message bubble with a clock icon. Also cleaned up pre-existing unused imports (`Badge`, `Bot` in TutorChat.jsx; `motion`, `AnimatePresence` in Tutor.jsx).
+- **Files changed**:
+  - `src/components/tutor/TutorChat.jsx` — Added `formatTimestamp()` helper function, `Clock` icon import, timestamp display below each message bubble (shows time for today, date+time for older messages). Removed unused `Badge` and `Bot` imports.
+  - `src/pages/Tutor.jsx` — Removed unused `motion` and `AnimatePresence` imports from `framer-motion`.
+- **Acceptance Criteria Verification:**
+  - [x] Sidebar listing all conversation sessions sorted by most recent — `Tutor.jsx:57-60` (query with `-created_date`), sidebar at lines 95-159
+  - [x] New conversation: select topic, subject, and tutor persona — `Tutor.jsx:194-281` (Dialog with topic input, subject select, tutor persona grid)
+  - [x] Chat with message bubbles, timestamp display — `TutorChat.jsx:446-479` (message bubbles), `TutorChat.jsx:470-477` (timestamp with Clock icon)
+  - [x] AI never gives direct answers - uses Socratic questioning — `TutorChat.jsx:264-273` (system prompt enforces Socratic method)
+  - [x] Vocabulary calibrated to student's grade level — `TutorChat.jsx:218-219` (grade context in prompt)
+  - [x] Context includes up to 10 most recent messages + last 5 conversation summaries — `TutorChat.jsx:257-260` (`.slice(-10)`), `TutorChat.jsx:122-130` (last 5 conversations)
+  - [x] Suggestion chips render after each AI response for follow-up — `TutorChat.jsx:504-526` (suggestion buttons with gradient styling)
+  - [x] Model selection (GPT-4o, GPT-4o Mini, Claude 3.5 Sonnet, Claude 3.5 Haiku, Gemini 2.0 Flash) persisted in localStorage — `TutorChat.jsx:19` (read), `TutorChat.jsx:46-47` (write), models at lines 368-372
+- **Learnings:**
+  - US-011 was ~95% implemented in a prior iteration. The full Tutor page with sidebar, new conversation dialog (topic/subject/persona selection), chat with Socratic AI, suggestion chips, model selection with localStorage persistence, file uploads, and learning profile integration were all already functional.
+  - The `InvokeLLM` integration is mocked in `supabaseClient.js:152-186` — it returns a fixed Socratic-style response with suggestions. Real AI would require connecting an API backend.
+  - The `TutorChat` component has a rich context system: it loads `StudentLearningProfile` (shared across tutors) and recent conversation summaries on mount, then includes both in the AI prompt along with the last 10 messages.
+  - The `formatTimestamp` helper shows time-only for today's messages and date+time for older ones — consistent with chat UX conventions.
+---

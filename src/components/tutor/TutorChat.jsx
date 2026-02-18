@@ -2,12 +2,21 @@ import React, { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Loader2, Sparkles, User, Bot, Paperclip, X, Image as ImageIcon } from "lucide-react";
+import { Send, Loader2, Sparkles, User, Paperclip, X, Image as ImageIcon, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTutorPersonality, tutorPersonalities } from "./tutorPersonalities";
+
+const formatTimestamp = (ts) => {
+  if (!ts) return "";
+  const date = new Date(ts);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const time = date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  if (isToday) return time;
+  return `${date.toLocaleDateString([], { month: "short", day: "numeric" })} ${time}`;
+};
 
 export default function TutorChat({ conversation, onUpdate, studentGrade }) {
   const [selectedTutorId, setSelectedTutorId] = useState(conversation?.tutor_id || "alex");
@@ -442,22 +451,32 @@ As you interact, if you notice insights about their learning style, update the p
                   />
                 </div>
               )}
-              <div
-                className={`max-w-[80%] rounded-2xl px-5 py-4 ${
-                  msg.role === "user"
-                    ? "bg-slate-800 text-white"
-                    : "bg-white border border-slate-100 shadow-sm"
-                }`}
-              >
-                {msg.role === "user" ? (
-                  <p className="text-base leading-7">{msg.content}</p>
-                ) : (
-                  <div>
-                    <div className={`text-xs font-semibold text-${tutor.color}-600 mb-2`}>{tutor.name}</div>
-                    <ReactMarkdown className="text-base prose prose-slate max-w-none [&>p]:mb-4 [&>p]:leading-7 [&>ul]:my-3 [&>ol]:my-3 [&>li]:mb-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                      {msg.content}
-                    </ReactMarkdown>
-                  </div>
+              <div className="flex flex-col">
+                <div
+                  className={`max-w-[80%] rounded-2xl px-5 py-4 ${
+                    msg.role === "user"
+                      ? "bg-slate-800 text-white"
+                      : "bg-white border border-slate-100 shadow-sm"
+                  }`}
+                >
+                  {msg.role === "user" ? (
+                    <p className="text-base leading-7">{msg.content}</p>
+                  ) : (
+                    <div>
+                      <div className={`text-xs font-semibold text-${tutor.color}-600 mb-2`}>{tutor.name}</div>
+                      <ReactMarkdown className="text-base prose prose-slate max-w-none [&>p]:mb-4 [&>p]:leading-7 [&>ul]:my-3 [&>ol]:my-3 [&>li]:mb-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                        {msg.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+                {msg.timestamp && (
+                  <span className={`text-[10px] text-slate-400 mt-1 flex items-center gap-1 ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}>
+                    <Clock className="h-2.5 w-2.5" />
+                    {formatTimestamp(msg.timestamp)}
+                  </span>
                 )}
               </div>
               {msg.role === "user" && (
