@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,16 +9,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   CheckCircle2,
   Circle,
   Clock,
-  MoreVertical,
   Pencil,
   Trash2,
   Bell,
   ArrowUpCircle,
   Mail,
   Sparkles,
+  FileText,
+  StickyNote,
+  MessageSquareText,
+  BookOpen,
 } from "lucide-react";
 import moment from "moment";
 import HomeworkComments from "./HomeworkComments";
@@ -44,7 +57,8 @@ export default function HomeworkTable({
   onOpenTutor,
   classes = [],
 }) {
-  const [expandedId, setExpandedId] = React.useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   if (!assignments || assignments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -238,7 +252,7 @@ export default function HomeworkTable({
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onDelete(hw);
+                          setDeleteTarget(hw);
                         }}
                         variant="outline"
                         size="sm"
@@ -248,6 +262,48 @@ export default function HomeworkTable({
                         Delete
                       </Button>
                     </div>
+
+                    {(hw.description || hw.notes || hw.teacher_feedback || assignedClass) && (
+                      <div className="px-4 pb-3 grid gap-3 sm:grid-cols-2">
+                        {assignedClass && (
+                          <div className="flex items-start gap-2">
+                            <BookOpen className="h-4 w-4 text-violet-400 mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Class</p>
+                              <p className="text-sm text-slate-600">{assignedClass.name}</p>
+                            </div>
+                          </div>
+                        )}
+                        {hw.description && (
+                          <div className="flex items-start gap-2 sm:col-span-2">
+                            <FileText className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Description</p>
+                              <p className="text-sm text-slate-600 whitespace-pre-wrap">{hw.description}</p>
+                            </div>
+                          </div>
+                        )}
+                        {hw.notes && (
+                          <div className="flex items-start gap-2">
+                            <StickyNote className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Notes</p>
+                              <p className="text-sm text-slate-600 whitespace-pre-wrap">{hw.notes}</p>
+                            </div>
+                          </div>
+                        )}
+                        {hw.teacher_feedback && (
+                          <div className="flex items-start gap-2">
+                            <MessageSquareText className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Teacher Feedback</p>
+                              <p className="text-sm text-slate-600 whitespace-pre-wrap">{hw.teacher_feedback}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <div className="px-4 pb-4">
                       <HomeworkComments homeworkId={hw.id} />
                     </div>
@@ -258,6 +314,29 @@ export default function HomeworkTable({
           );
         })}
       </AnimatePresence>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Assignment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deleteTarget?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onDelete(deleteTarget);
+                setDeleteTarget(null);
+              }}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

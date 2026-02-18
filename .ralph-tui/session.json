@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:13:18.453Z",
-  "currentIteration": 4,
+  "updatedAt": "2026-02-18T10:17:16.304Z",
+  "currentIteration": 5,
   "maxIterations": 50,
-  "tasksCompleted": 4,
+  "tasksCompleted": 5,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -41,8 +41,8 @@
       {
         "id": "US-005",
         "title": "Parent Student Switching",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-006",
@@ -200,6 +200,16 @@
       "durationMs": 113723,
       "startedAt": "2026-02-18T10:09:22.841Z",
       "endedAt": "2026-02-18T10:11:16.564Z"
+    },
+    {
+      "iteration": 5,
+      "status": "completed",
+      "taskId": "US-005",
+      "taskTitle": "Parent Student Switching",
+      "taskCompleted": true,
+      "durationMs": 120806,
+      "startedAt": "2026-02-18T10:11:17.644Z",
+      "endedAt": "2026-02-18T10:13:18.450Z"
     }
   ],
   "skippedTaskIds": [],

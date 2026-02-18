@@ -81,3 +81,24 @@ after each iteration and it's included in prompts for context.
   - The `useStudent()` hook is the single source of truth for student context across the app. All data-fetching components use `currentStudent.id` in their query keys for automatic refetch on switch.
   - Pre-existing unused import `User` in `StudentSelector.jsx` (known lint issue, not from current work).
 ---
+
+## 2026-02-18 - US-006
+- **What was implemented**: The Assignment CRUD and List View was mostly already built in prior iterations. Two gaps were found and fixed:
+  1. **Expanded row details**: Added a details section in the expandable area showing class name, description, notes, and teacher feedback with icons and labeled fields (only rendered when data exists).
+  2. **Delete confirmation**: Replaced the direct `onDelete(hw)` call with an `AlertDialog` confirmation prompt showing the assignment title and a warning that the action cannot be undone.
+- **Files changed**:
+  - `src/components/homework/HomeworkTable.jsx` — Added `AlertDialog` imports, `deleteTarget` state, details grid section in expanded rows (class/description/notes/teacher_feedback), and delete confirmation dialog. Removed unused `MoreVertical` import. Added new lucide icons: `FileText`, `StickyNote`, `MessageSquareText`, `BookOpen`.
+- **Acceptance Criteria Verification:**
+  - [x] List view with search by title and filter by status (All/To Do/Working On/Done) — `Assignments.jsx:107-114,154-169`
+  - [x] Expandable rows with full details, comments, and action buttons — `HomeworkTable.jsx:86,195-311` (details section at lines 266-304)
+  - [x] Create/edit via dialog: title (required), class link, subject, priority, due date, description, notes, teacher feedback — `HomeworkForm.jsx`
+  - [x] New assignments default to `status: "todo"`, `source: "manual"` — `HomeworkForm.jsx:80-81`
+  - [x] Inline status change via icon click -> dropdown (todo/in_progress/completed) — `HomeworkTable.jsx:107-129`
+  - [x] "Schoology" badge on imported items — `HomeworkTable.jsx:142-146`
+  - [x] Delete with confirmation — `HomeworkTable.jsx:318-339` (AlertDialog)
+- **Learnings:**
+  - US-006 was ~90% complete from prior iterations. The CRUD operations, list/calendar views, search, status filtering, status dropdown, Schoology badge, and comments were all already functional.
+  - The `AlertDialog` component from `@/components/ui/alert-dialog` (Radix-based shadcn/ui) works well for confirmation dialogs. Pattern: use a state variable (e.g., `deleteTarget`) as both the open trigger (`!!deleteTarget`) and data source for the dialog content.
+  - The expanded row detail section conditionally renders only when at least one field has data, using `(hw.description || hw.notes || hw.teacher_feedback || assignedClass)`.
+  - Pre-existing lint errors remain at 22 (was 23, removed one unused `MoreVertical` import). All are unused-import issues in other files.
+---
