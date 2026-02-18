@@ -108,7 +108,7 @@ export default function Reminders() {
         className={`flex items-center gap-4 rounded-xl border p-4 transition-all ${
           isOverdue
             ? "bg-rose-50/50 border-rose-100"
-            : "bg-white border-slate-100"
+            : "bg-white/60 backdrop-blur-sm border-white/30"
         }`}
       >
         <div

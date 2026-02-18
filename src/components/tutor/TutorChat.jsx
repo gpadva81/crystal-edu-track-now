@@ -452,7 +452,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
                     setInput(prompt);
                     document.querySelector('input[placeholder*="Ask a question"]')?.focus();
                   }}
-                  className="px-4 py-2 rounded-full bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-300 text-sm text-slate-600 transition-colors"
+                  className="px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm hover:bg-violet-50 border border-white/30 hover:border-violet-300 text-sm text-slate-600 transition-colors"
                 >
                   {prompt}
                 </button>
@@ -485,7 +485,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
                   className={`max-w-[80%] rounded-2xl px-5 py-4 ${
                     msg.role === "user"
                       ? "bg-slate-800 text-white"
-                      : "bg-white border border-slate-100 shadow-sm"
+                      : "bg-white/70 backdrop-blur-sm border border-white/30 shadow-sm"
                   }`}
                 >
                   {msg.role === "user" ? (
@@ -530,7 +530,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
                 className={`h-9 w-9 rounded-lg object-cover border-2 border-${tutor.color}-200`}
               />
             </div>
-            <div className="bg-white border border-slate-100 rounded-2xl px-5 py-4 shadow-sm">
+            <div className="bg-white/70 backdrop-blur-sm border border-white/30 rounded-2xl px-5 py-4 shadow-sm">
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
                 <span className="text-base text-slate-400">Thinking...</span>
@@ -566,7 +566,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
         <div ref={endRef} />
       </div>
 
-      <div className="border-t border-slate-100 bg-white p-4">
+      <div className="border-t border-white/30 bg-white/60 backdrop-blur-sm p-4">
         {uploadedFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {uploadedFiles.map((file, idx) => (

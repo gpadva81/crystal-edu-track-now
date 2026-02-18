@@ -9,7 +9,8 @@ after each iteration and it's included in prompts for context.
 - **Routing**: Public routes (`/login`, `/register`, `/accept-invite`) are defined in `App.jsx`. All other routes go through `AuthenticatedApp` which redirects to `/login` if not authenticated.
 - **UI components**: Shadcn/ui + Radix UI primitives in `src/components/ui/`. Styling uses Tailwind with violet/purple gradient theme and glassmorphism.
 - **Inline validation pattern**: Use `fieldErrors` state object keyed by field name. Show `<p className="text-sm text-rose-600">` below the input. Add `border-rose-400 focus-visible:ring-rose-400` to input className when error present. Clear field error on input change.
-- **Pre-existing lint issues**: Many files have unused import errors (23 total). These are not from current work — they exist across `StudentSelector`, `ClassCard`, `GamificationCard`, `UpcomingList`, `WeeklyCalendar`, etc.
+- **Glassmorphism design system**: CSS utility classes in `index.css` (`.glass-card`, `.glass-nav`, `.glass-input`, `.btn-premium`, `.studio-bg`, `.glass-panel`, `.glass-overlay`). All shadcn/ui primitives use glass styling. Pattern: `bg-white/60 backdrop-blur-sm` for subtle elements, `bg-white/70 backdrop-blur-xl` for dialogs/panels, `border-white/30` + violet shadow. Focus: `ring-2 ring-violet-500/20 border-violet-400/40 bg-white/70`. Overlays: `bg-black/40 backdrop-blur-md`. Never use plain `bg-white` for containers.
+- **Pre-existing lint issues**: Many files have unused import errors (14 total). These are not from current work — they exist across `StudentSelector`, `ClassCard`, `GamificationCard`, `UpcomingList`, `WeeklyCalendar`, etc.
 
 ---
 
@@ -416,4 +417,33 @@ after each iteration and it's included in prompts for context.
   - Navigation-level access gates (e.g., hiding a dropdown item with `isParent`) are not sufficient — always add page-level guards for direct URL access. The `isParent` guard pattern with an early return is the right approach.
   - The `admin_remove_student_parent` RPC is `SECURITY DEFINER` and performs its own authorization: checks that the caller is the student's primary parent (owner), prevents self-removal, and prevents removing non-existent links.
   - Pre-existing lint issues remain at 18 (unchanged). The 2 lint warnings in Admin.jsx were fixed by removing the unused `user` destructure.
+---
+
+## 2026-02-18 - US-023
+- **What was implemented**: The Glassmorphism UI theme was ~70% complete from prior iterations. The CSS utility classes (`.glass-card`, `.glass-nav`, `.glass-input`, `.btn-premium`, `.studio-bg`), `prefers-reduced-motion` rules, mobile `backdrop-blur` capping, and some shadcn/ui primitives (Card, Input, Dialog, Tabs, DropdownMenu, Progress, Badge, Button) were already updated. Gaps fixed:
+  1. **AlertDialog**: Updated overlay from `bg-black/80` to `bg-black/40 backdrop-blur-md` (matching Dialog), content from `border bg-background` to glass styling (`border-white/30 bg-white/70 backdrop-blur-xl` with violet shadow).
+  2. **Select**: Updated trigger to glass input style (`border-white/30 bg-white/50 backdrop-blur-sm` with violet focus ring), content to glass panel (`border-white/30 bg-white/75 backdrop-blur-xl`), items to use `focus:bg-violet-50 focus:text-violet-700`.
+  3. **Textarea**: Updated from plain `border-input bg-transparent` to glass input style matching `<Input>`.
+  4. **Popover**: Updated content from `border bg-popover` to glass panel style.
+  5. **Sheet**: Updated overlay from `bg-black/80` to `bg-black/40 backdrop-blur-md`, content from `bg-background` to `bg-white/70 backdrop-blur-xl`.
+  6. **Component-level fixes**: Replaced all remaining plain `bg-white` container usages with `bg-white/60 backdrop-blur-sm` (or `/70` for input areas) across 8 components: `UserNotRegisteredError`, `UpcomingList`, `WeeklyCalendar`, `Reminders`, `HomeworkTable`, `ClassCard`, `TutorChat` (4 spots: starter prompts, message bubbles, loading indicator, input section), `HomeworkComments` (textarea).
+- **Files changed**:
+  - `src/components/ui/alert-dialog.jsx` — Glass overlay + glass content
+  - `src/components/ui/select.jsx` — Glass trigger + glass content + violet focus items
+  - `src/components/ui/textarea.jsx` — Glass input styling
+  - `src/components/ui/popover.jsx` — Glass panel content
+  - `src/components/ui/sheet.jsx` — Glass overlay + glass content
+  - `src/components/UserNotRegisteredError.jsx` — `studio-bg` + `glass-card`
+  - `src/components/dashboard/UpcomingList.jsx` — Glass list items
+  - `src/components/dashboard/WeeklyCalendar.jsx` — Glass day cells
+  - `src/pages/Reminders.jsx` — Glass reminder cards
+  - `src/components/homework/HomeworkTable.jsx` — Glass assignment rows
+  - `src/components/classes/ClassCard.jsx` — Glass fallback when no color
+  - `src/components/tutor/TutorChat.jsx` — Glass bubbles, prompts, loading, input
+  - `src/components/homework/HomeworkComments.jsx` — Glass comment textarea
+- **Learnings:**
+  - The glassmorphism design system pattern: `bg-white/60 backdrop-blur-sm` for subtle elements, `bg-white/70 backdrop-blur-xl` for prominent containers (dialogs, panels), `bg-white/75 backdrop-blur-xl` for dropdown/popover content. Always pair with `border-white/30` and violet shadow.
+  - When updating shadcn/ui primitives, the focus styles should match across all form elements: `focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400/40 focus:bg-white/70`.
+  - Dialog/AlertDialog/Sheet overlays should use `bg-black/40 backdrop-blur-md` (not `bg-black/80`) to maintain the frosted glass aesthetic.
+  - All 14 pre-existing lint errors are unchanged (unused imports across 8 files). No new lint issues introduced.
 ---

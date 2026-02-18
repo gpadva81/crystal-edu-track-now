@@ -97,7 +97,7 @@ export default function HomeworkTable({
                   ? "bg-slate-50/50 border-slate-100"
                   : isOverdue
                   ? "bg-rose-50/30 border-rose-100"
-                  : "bg-white border-slate-100 hover:border-slate-200"
+                  : "bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/70"
               }`}
             >
               <div 

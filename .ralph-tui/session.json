@@ -3,10 +3,10 @@
   "sessionId": "4a2d4084-1148-4a05-b504-4f4fd5c29353",
   "status": "running",
   "startedAt": "2026-02-18T10:02:07.066Z",
-  "updatedAt": "2026-02-18T10:53:42.182Z",
-  "currentIteration": 21,
+  "updatedAt": "2026-02-18T10:59:40.428Z",
+  "currentIteration": 22,
   "maxIterations": 50,
-  "tasksCompleted": 21,
+  "tasksCompleted": 22,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -143,8 +143,8 @@
       {
         "id": "US-022",
         "title": "Admin Settings",
-        "status": "open",
-        "completedInSession": false
+        "status": "completed",
+        "completedInSession": true
       },
       {
         "id": "US-023",
@@ -370,6 +370,16 @@
       "durationMs": 113589,
       "startedAt": "2026-02-18T10:48:58.167Z",
       "endedAt": "2026-02-18T10:50:51.756Z"
+    },
+    {
+      "iteration": 22,
+      "status": "completed",
+      "taskId": "US-022",
+      "taskTitle": "Admin Settings",
+      "taskCompleted": true,
+      "durationMs": 169353,
+      "startedAt": "2026-02-18T10:50:52.826Z",
+      "endedAt": "2026-02-18T10:53:42.179Z"
     }
   ],
   "skippedTaskIds": [],

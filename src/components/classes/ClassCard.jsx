@@ -36,7 +36,7 @@ export default function ClassCard({ classData, homeworkCount, onEdit, onDelete }
 
   return (
     <Card 
-      className={`${colors[classData.color] || "bg-white"} border hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}
+      className={`${colors[classData.color] || "bg-white/60 backdrop-blur-sm"} border hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}
       onClick={() => navigate(createPageUrl(`ClassDetails?classId=${classData.id}`))}
     >
       <CardHeader className="pb-3">

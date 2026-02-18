@@ -154,7 +154,7 @@ export default function HomeworkComments({ homeworkId }) {
           onKeyDown={handleKeyDown}
           placeholder="Add a comment..."
           rows={1}
-          className="flex-1 min-h-[36px] max-h-20 resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+          className="flex-1 min-h-[36px] max-h-20 resize-none rounded-lg border border-white/30 bg-white/50 backdrop-blur-sm px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400/40 focus:bg-white/70 transition-all"
         />
         <Button
           type="submit"
