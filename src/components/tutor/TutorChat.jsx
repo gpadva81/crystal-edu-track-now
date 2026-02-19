@@ -34,6 +34,15 @@ export default function TutorChat({ conversation, onUpdate, studentGrade }) {
   const [learningProfile, setLearningProfile] = useState(null);
   const [recentConversations, setRecentConversations] = useState([]);
 
+  // Supabase can return text[] as Postgres strings like "{a,b}" — ensure JS arrays
+  const toArray = (v) => {
+    if (Array.isArray(v)) return v;
+    if (typeof v === "string" && v.startsWith("{")) {
+      return v.slice(1, -1).split(",").filter(Boolean);
+    }
+    return [];
+  };
+
   const starterPrompts = [
     "I'm stuck on this problem. Can you help me understand it?",
     "Can you explain this concept in simpler terms?",
@@ -115,7 +124,11 @@ export default function TutorChat({ conversation, onUpdate, studentGrade }) {
       });
       setLearningProfile(newProfile);
     } else {
-      setLearningProfile(profiles[0]);
+      const p = profiles[0];
+      p.strengths = toArray(p.strengths);
+      p.areas_for_growth = toArray(p.areas_for_growth);
+      p.common_misconceptions = toArray(p.common_misconceptions);
+      setLearningProfile(p);
     }
 
     // Load recent conversation history (last 5 conversations)
@@ -367,6 +380,9 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
           learningProfile.id,
           updates
         );
+        updatedProfile.strengths = toArray(updatedProfile.strengths);
+        updatedProfile.areas_for_growth = toArray(updatedProfile.areas_for_growth);
+        updatedProfile.common_misconceptions = toArray(updatedProfile.common_misconceptions);
         setLearningProfile(updatedProfile);
       }
     }
