@@ -195,8 +195,8 @@ const VISION_MODELS = new Set([
   "google/gemini-2.0-flash-exp",
 ]);
 
-// Free vision-capable fallback for image tasks
-const FREE_VISION_MODEL = "google/gemma-3-27b-it:free";
+// Vision-capable fallback for image tasks (GPT-4o Mini: fast, cheap, excellent vision)
+const VISION_FALLBACK_MODEL = "openai/gpt-4o-mini";
 
 // Strip <think>...</think> blocks from reasoning models (DeepSeek R1)
 function stripThinkBlocks(text) {
@@ -228,8 +228,14 @@ const integrations = {
       return { success: true };
     },
     async UploadFile({ file }) {
-      const url = URL.createObjectURL(file);
-      return { file_url: url };
+      // Convert to base64 data URL so OpenRouter can read the image inline
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      return { file_url: base64 };
     },
     async InvokeLLM({ model = "deepseek-r1-free", prompt, response_json_schema, file_urls }) {
       const apiKey = await getOpenRouterKey();
@@ -275,7 +281,7 @@ const integrations = {
 
       // Auto-switch to a vision model if images are provided and current model can't handle them
       if (hasImages && !VISION_MODELS.has(openRouterModel)) {
-        openRouterModel = FREE_VISION_MODEL;
+        openRouterModel = VISION_FALLBACK_MODEL;
       }
 
       // Build messages array for OpenRouter
