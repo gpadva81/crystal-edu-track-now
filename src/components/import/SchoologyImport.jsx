@@ -121,12 +121,14 @@ Extract ALL assignments you can see across all images. If you see even partial i
 
       const assignments = extracted.assignments
         .map((a) => ({
-          ...a,
+          title: a.title,
+          description: a.description || "",
+          due_date: a.due_date || null,
+          priority: a.priority || "medium",
           student_id: studentId,
           class_id: a.class_name ? classNameToId.get(a.class_name.toLowerCase()) : undefined,
           status: "todo",
           source: "schoology_import",
-          priority: a.priority || "medium",
         }))
         .filter(a => !existingSet.has(`${a.title?.toLowerCase()}|${a.due_date}`));
 
