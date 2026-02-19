@@ -25,7 +25,7 @@ export default function TutorChat({ conversation, onUpdate, studentGrade }) {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedModel, setSelectedModel] = useState(localStorage.getItem("tutorModel") || "gpt-4o");
+  const [selectedModel, setSelectedModel] = useState(localStorage.getItem("tutorModel") || "deepseek-r1-free");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [teachingStyle, setTeachingStyle] = useState(localStorage.getItem("tutorStyle") || "socratic");
@@ -462,6 +462,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="deepseek-r1-free">DeepSeek R1 (Free)</SelectItem>
               <SelectItem value="gpt-4o">GPT-4o</SelectItem>
               <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
               <SelectItem value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</SelectItem>

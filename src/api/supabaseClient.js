@@ -176,6 +176,7 @@ const rpc = {
 // OpenRouter model mapping
 // ---------------------------------------------------------------------------
 const OPENROUTER_MODELS = {
+  "deepseek-r1-free": "deepseek/deepseek-r1:free",
   "gpt-4o": "openai/gpt-4o",
   "gpt-4o-mini": "openai/gpt-4o-mini",
   "claude-3-5-sonnet-20241022": "anthropic/claude-3.5-sonnet",
