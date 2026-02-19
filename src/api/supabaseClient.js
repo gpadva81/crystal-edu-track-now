@@ -188,7 +188,9 @@ let _cachedApiKey = null;
 async function getOpenRouterKey() {
   if (_cachedApiKey) return _cachedApiKey;
   try {
-    const key = await rpc.getApiKey();
+    const result = await rpc.getApiKey();
+    // RPC returns { api_key: "sk-or-..." }
+    const key = result?.api_key || null;
     if (key) _cachedApiKey = key;
     return key;
   } catch {
@@ -271,16 +273,17 @@ const integrations = {
         messages,
       };
 
-      // Request structured JSON output when schema is provided
+      // Request JSON output when schema is provided
       if (response_json_schema) {
-        body.response_format = {
-          type: "json_schema",
-          json_schema: {
-            name: "response",
-            strict: false,
-            schema: response_json_schema,
-          },
-        };
+        // Use json_object (broadly supported) instead of json_schema
+        body.response_format = { type: "json_object" };
+        // Embed the schema in the prompt so all models understand the expected shape
+        const schemaHint = `\n\nRespond with a JSON object matching this schema: ${JSON.stringify(response_json_schema)}`;
+        if (Array.isArray(messages[0].content)) {
+          messages[0].content[0].text += schemaHint;
+        } else {
+          messages[0].content += schemaHint;
+        }
       }
 
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
