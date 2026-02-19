@@ -137,67 +137,7 @@ const auth = {
 };
 
 // ---------------------------------------------------------------------------
-// Integrations — kept as mocks (no external services yet)
-// ---------------------------------------------------------------------------
-const integrations = {
-  Core: {
-    async SendEmail({ to, subject }) {
-      console.log(`[Mock Email] To: ${to}, Subject: ${subject}`);
-      return { success: true };
-    },
-    async UploadFile({ file }) {
-      const url = URL.createObjectURL(file);
-      return { file_url: url };
-    },
-    async InvokeLLM({ response_json_schema }) {
-      if (response_json_schema?.properties?.answer) {
-        return {
-          answer:
-            "That's a great question! Let me help you think through this. What do you already know about this topic? Try breaking the problem down into smaller parts — what's the first step you can identify?",
-          suggestions: [
-            "Can you explain that differently?",
-            "What's the next step?",
-            "I'm still confused about one part",
-          ],
-          profile_updates: null,
-        };
-      }
-      if (response_json_schema?.properties?.assignments) {
-        return {
-          assignments: [
-            {
-              title: "Sample Imported Assignment",
-              class_name: "Sample Class",
-              subject: "General",
-              description:
-                "This is a demo import. Connect an AI API for real extraction.",
-              due_date: new Date(
-                Date.now() + 7 * 24 * 60 * 60 * 1000
-              ).toISOString(),
-              teacher_name: "Demo Teacher",
-              teacher_email: "",
-              priority: "medium",
-            },
-          ],
-        };
-      }
-      return "I'm running in demo mode without an AI backend. To enable the AI tutor, connect an API key.";
-    },
-  },
-};
-
-// ---------------------------------------------------------------------------
-// App logs — no-op
-// ---------------------------------------------------------------------------
-const appLogs = {
-  async logUserInApp() {},
-};
-
-// ---------------------------------------------------------------------------
-// Export with identical shape to localClient
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// RPC helpers
+// RPC helpers (defined early — used by OpenRouter integration below)
 // ---------------------------------------------------------------------------
 const rpc = {
   async acceptParentInvite(token) {
@@ -215,6 +155,7 @@ const rpc = {
   },
 
   async updateApiKey(newApiKey) {
+    _cachedApiKey = null; // clear cache on update
     const { data, error } = await supabase.rpc("update_api_key", {
       new_api_key: newApiKey,
     });
@@ -229,6 +170,161 @@ const rpc = {
     if (error) throw error;
     return data;
   },
+};
+
+// ---------------------------------------------------------------------------
+// OpenRouter model mapping
+// ---------------------------------------------------------------------------
+const OPENROUTER_MODELS = {
+  "gpt-4o": "openai/gpt-4o",
+  "gpt-4o-mini": "openai/gpt-4o-mini",
+  "claude-3-5-sonnet-20241022": "anthropic/claude-3.5-sonnet",
+  "claude-3-5-haiku-20241022": "anthropic/claude-3.5-haiku",
+  "gemini-2.0-flash-exp": "google/gemini-2.0-flash-exp",
+};
+
+let _cachedApiKey = null;
+
+async function getOpenRouterKey() {
+  if (_cachedApiKey) return _cachedApiKey;
+  try {
+    const key = await rpc.getApiKey();
+    if (key) _cachedApiKey = key;
+    return key;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Integrations — OpenRouter-powered AI + mocks for email/upload
+// ---------------------------------------------------------------------------
+const integrations = {
+  Core: {
+    async SendEmail({ to, subject }) {
+      console.log(`[Mock Email] To: ${to}, Subject: ${subject}`);
+      return { success: true };
+    },
+    async UploadFile({ file }) {
+      const url = URL.createObjectURL(file);
+      return { file_url: url };
+    },
+    async InvokeLLM({ model, prompt, response_json_schema, file_urls }) {
+      const apiKey = await getOpenRouterKey();
+
+      // Fallback to demo mode if no API key
+      if (!apiKey) {
+        if (response_json_schema?.properties?.answer) {
+          return {
+            answer:
+              "I'm running in demo mode without an AI backend. To enable the AI tutor, add your OpenRouter API key in Admin Settings.",
+            suggestions: [
+              "How do I get an API key?",
+              "Where are Admin Settings?",
+            ],
+            profile_updates: null,
+          };
+        }
+        if (response_json_schema?.properties?.assignments) {
+          return {
+            assignments: [
+              {
+                title: "Sample Imported Assignment",
+                class_name: "Sample Class",
+                subject: "General",
+                description:
+                  "This is a demo import. Add your OpenRouter API key in Admin Settings for real extraction.",
+                due_date: new Date(
+                  Date.now() + 7 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                teacher_name: "Demo Teacher",
+                teacher_email: "",
+                priority: "medium",
+              },
+            ],
+          };
+        }
+        return "I'm running in demo mode. To enable the AI tutor, add your OpenRouter API key in Admin Settings.";
+      }
+
+      // Build messages array for OpenRouter
+      const messages = [];
+
+      // If file_urls provided, build multimodal content
+      if (file_urls && file_urls.length > 0) {
+        const content = [
+          { type: "text", text: prompt },
+          ...file_urls.map((url) => ({
+            type: "image_url",
+            image_url: { url },
+          })),
+        ];
+        messages.push({ role: "user", content });
+      } else {
+        messages.push({ role: "user", content: prompt });
+      }
+
+      const openRouterModel = OPENROUTER_MODELS[model] || model;
+
+      const body = {
+        model: openRouterModel,
+        messages,
+      };
+
+      // Request structured JSON output when schema is provided
+      if (response_json_schema) {
+        body.response_format = {
+          type: "json_schema",
+          json_schema: {
+            name: "response",
+            strict: false,
+            schema: response_json_schema,
+          },
+        };
+      }
+
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "StudyTrack",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`OpenRouter error (${res.status}): ${err}`);
+      }
+
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || "";
+
+      // Parse JSON response if schema was requested
+      if (response_json_schema) {
+        try {
+          return JSON.parse(text);
+        } catch {
+          // If JSON parsing fails, wrap in expected shape
+          if (response_json_schema.properties?.answer) {
+            return { answer: text, suggestions: [], profile_updates: null };
+          }
+          return text;
+        }
+      }
+
+      return text;
+    },
+  },
+};
+
+// ---------------------------------------------------------------------------
+// App logs — no-op
+// ---------------------------------------------------------------------------
+const appLogs = {
+  async logUserInApp() {},
 };
 
 // ---------------------------------------------------------------------------
