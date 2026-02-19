@@ -212,7 +212,7 @@ const integrations = {
       const url = URL.createObjectURL(file);
       return { file_url: url };
     },
-    async InvokeLLM({ model, prompt, response_json_schema, file_urls }) {
+    async InvokeLLM({ model = "deepseek-r1-free", prompt, response_json_schema, file_urls }) {
       const apiKey = await getOpenRouterKey();
 
       // Fallback to demo mode if no API key
