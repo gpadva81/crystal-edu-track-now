@@ -30,41 +30,59 @@ export default function SchoologyImport({ studentId, onImportComplete }) {
       })
     );
 
-    const extracted = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are analyzing screenshots of homework assignments from Schoology. Extract all homework assignments you can see, including:
-- Assignment title
-- Course/subject name
-- Description or instructions (if visible)
-- Due date (convert to ISO format, assume year 2026 if not specified)
-- Teacher name (look for instructor/teacher info)
-- Teacher email or contact (if visible)
-- Priority based on urgency (low/medium/high)
+    let extracted;
+    try {
+      extracted = await base44.integrations.Core.InvokeLLM({
+        model: "gpt-4o",
+        prompt: `Analyze these Schoology screenshot(s) and extract EVERY homework assignment visible. For each assignment provide:
+- title: the assignment name
+- class_name: the course/class name
+- subject: the academic subject
+- description: any instructions or details visible
+- due_date: in ISO format (YYYY-MM-DD), assume year 2026 if not shown
+- teacher_name: instructor name if visible
+- teacher_email: instructor email if visible
+- priority: "low", "medium", or "high" based on due date urgency
 
-Return a JSON array of assignments. Be thorough and extract all visible assignments.`,
-      file_urls: fileUrls,
-      add_context_from_internet: false,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          assignments: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-               title: { type: "string" },
-               class_name: { type: "string" },
-               subject: { type: "string" },
-               description: { type: "string" },
-               due_date: { type: "string" },
-               teacher_name: { type: "string" },
-               teacher_email: { type: "string" },
-               priority: { type: "string", enum: ["low", "medium", "high"] },
+Extract ALL assignments you can see across all images. If you see even partial information, include it with what you have.`,
+        file_urls: fileUrls,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            assignments: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                 title: { type: "string" },
+                 class_name: { type: "string" },
+                 subject: { type: "string" },
+                 description: { type: "string" },
+                 due_date: { type: "string" },
+                 teacher_name: { type: "string" },
+                 teacher_email: { type: "string" },
+                 priority: { type: "string", enum: ["low", "medium", "high"] },
+                },
               },
             },
           },
         },
-      },
-    });
+      });
+    } catch (err) {
+      console.error("Import InvokeLLM error:", err);
+      setResult({ success: false, error: err.message || "AI extraction failed" });
+      setImporting(false);
+      return;
+    }
+
+    console.log("Import AI response:", extracted);
+
+    // Handle cases where extracted is a string (failed JSON parse)
+    if (typeof extracted === "string") {
+      setResult({ success: false, error: "AI returned text instead of structured data. Please try again." });
+      setImporting(false);
+      return;
+    }
 
     if (extracted?.assignments && extracted.assignments.length > 0) {
       // Get existing classes for this student
