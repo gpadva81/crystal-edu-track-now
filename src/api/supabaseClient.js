@@ -299,8 +299,15 @@ const integrations = {
       });
 
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`OpenRouter error (${res.status}): ${err}`);
+        const errText = await res.text();
+        if (res.status === 402) {
+          const friendly = "Your OpenRouter account needs more credits. Visit openrouter.ai/credits to add funds, then try again.";
+          if (response_json_schema?.properties?.answer) {
+            return { answer: friendly, suggestions: [], profile_updates: null };
+          }
+          return friendly;
+        }
+        throw new Error(`OpenRouter error (${res.status}): ${errText}`);
       }
 
       const data = await res.json();
