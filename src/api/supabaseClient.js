@@ -271,6 +271,7 @@ const integrations = {
       const body = {
         model: openRouterModel,
         messages,
+        max_tokens: 1024,
       };
 
       // Request JSON output when schema is provided
