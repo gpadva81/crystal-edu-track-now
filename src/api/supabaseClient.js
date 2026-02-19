@@ -195,8 +195,8 @@ const VISION_MODELS = new Set([
   "google/gemini-2.0-flash-exp",
 ]);
 
-// Vision-capable fallback for image tasks (GPT-4o Mini: fast, cheap, excellent vision)
-const VISION_FALLBACK_MODEL = "openai/gpt-4o-mini";
+// Vision-capable fallback for image tasks (GPT-4o: most reliable OCR/vision)
+const VISION_FALLBACK_MODEL = "openai/gpt-4o";
 
 // Strip <think>...</think> blocks from reasoning models (DeepSeek R1)
 function stripThinkBlocks(text) {
@@ -302,7 +302,7 @@ const integrations = {
       const body = {
         model: openRouterModel,
         messages,
-        max_tokens: 1024,
+        max_tokens: hasImages ? 4096 : 1024,
       };
 
       // Embed JSON schema in the prompt (works with all models including free ones)
