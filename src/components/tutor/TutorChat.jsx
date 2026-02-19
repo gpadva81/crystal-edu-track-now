@@ -3,7 +3,7 @@ import { base44 } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Loader2, Sparkles, User, Paperclip, X, Image as ImageIcon, Clock } from "lucide-react";
+import { Send, Loader2, Sparkles, User, Paperclip, X, Image as ImageIcon, Clock, GraduationCap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTutorPersonality, tutorPersonalities } from "./tutorPersonalities";
@@ -28,11 +28,74 @@ export default function TutorChat({ conversation, onUpdate, studentGrade }) {
   const [selectedModel, setSelectedModel] = useState(localStorage.getItem("tutorModel") || "gpt-4o");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [teachingStyle, setTeachingStyle] = useState(localStorage.getItem("tutorStyle") || "socratic");
   const endRef = useRef(null);
   const fileInputRef = useRef(null);
   const messages = conversation?.messages || [];
   const [learningProfile, setLearningProfile] = useState(null);
   const [recentConversations, setRecentConversations] = useState([]);
+
+  const TEACHING_STYLES = {
+    socratic: {
+      label: "Socratic",
+      description: "Guides with questions only",
+      prompt: `CRITICAL - YOUR TEACHING PHILOSOPHY:
+- NEVER give direct answers or do the work for them
+- Use the Socratic method: ask guiding questions to help them think
+- If they're stuck, break the problem into smaller steps with questions
+- Encourage their thinking process and celebrate effort
+- Keep responses SHORT (2-4 sentences)
+- Be warm and supportive, but let THEM figure it out
+- Stay true to your unique personality and teaching style
+- ADAPT to their learning profile - use their strengths and address their challenges
+
+Guide them with questions, not answers.`,
+      suggestionDesc: "2-3 short follow-up questions or prompts the student might ask to continue learning",
+      pillLabel: "Continue the conversation:",
+      initPrompt: "Your role is to guide students through their thinking process, NOT to give them answers. Use the student profile to adapt your approach. Ask ONE engaging question to understand what they're working on and where they're stuck.\n\nIMPORTANT: Never provide direct answers. Guide them with questions. Stay true to your personality. Keep it concise and warm (2-3 sentences max).",
+    },
+    guided: {
+      label: "Guided",
+      description: "Hints + questions",
+      prompt: `YOUR TEACHING APPROACH - GUIDED MODE:
+- Offer helpful hints and partial explanations to nudge the student forward
+- Combine short explanations with follow-up questions
+- When they're stuck, suggest 2-3 possible approaches they could try (without solving it for them)
+- Encourage their thinking but provide more scaffolding than pure Socratic
+- Keep responses MODERATE length (3-5 sentences)
+- Be warm and supportive, provide context clues
+- Stay true to your unique personality and teaching style
+- ADAPT to their learning profile - use their strengths and address their challenges
+
+Balance guidance with discovery.`,
+      suggestionDesc: "2-3 short follow-up questions the TUTOR would ask next to probe the student's understanding or guide them further. Write these as questions FROM the tutor TO the student.",
+      pillLabel: "The tutor might ask next:",
+      initPrompt: "Your role is to guide students with a mix of hints and questions. Offer some scaffolding but let them think. Ask ONE engaging question and provide a small hint about the topic to get them started.\n\nProvide hints alongside questions. Stay true to your personality. Keep it concise and warm (2-4 sentences max).",
+    },
+    direct: {
+      label: "Direct",
+      description: "Solutions + explanations",
+      prompt: `YOUR TEACHING APPROACH - DIRECT MODE:
+- Provide clear, step-by-step explanations and solutions
+- Offer specific answer options or solution paths the student can choose from
+- Explain the "why" behind each step so they learn the reasoning
+- Still ask occasional check-in questions to verify understanding
+- Keep responses THOROUGH but concise (4-6 sentences)
+- Be warm and encouraging while being informative
+- Stay true to your unique personality and teaching style
+- ADAPT to their learning profile - use their strengths and address their challenges
+
+Teach directly while building understanding.`,
+      suggestionDesc: "2-3 specific follow-up questions the TUTOR would ask to check the student's understanding or explore the next concept. Write these as questions FROM the tutor TO the student.",
+      pillLabel: "The tutor might ask next:",
+      initPrompt: "Your role is to teach the student directly with clear explanations. Start by asking what they need help with, then offer a clear starting explanation with the first concept or step.\n\nBe direct and informative. Stay true to your personality. Keep it warm and clear (3-5 sentences max).",
+    },
+  };
+
+  const handleStyleChange = (style) => {
+    setTeachingStyle(style);
+    localStorage.setItem("tutorStyle", style);
+  };
 
   // Supabase can return text[] as Postgres strings like "{a,b}" — ensure JS arrays
   const toArray = (v) => {
@@ -184,6 +247,7 @@ export default function TutorChat({ conversation, onUpdate, studentGrade }) {
         }`
       : "";
 
+    const style = TEACHING_STYLES[teachingStyle];
     const initialPrompt = await base44.integrations.Core.InvokeLLM({
       model: selectedModel,
       prompt: `You are ${tutor.name}, a tutor with this personality: ${tutor.persona}
@@ -192,9 +256,7 @@ ${gradeContext}${profileContext}${recentContext}
 
 The student's homework topic is: "${conversation.title}".
 
-Your role is to guide students through their thinking process, NOT to give them answers. Use the student profile to adapt your approach. Ask ONE engaging question to understand what they're working on and where they're stuck.
-
-IMPORTANT: Never provide direct answers. Guide them with questions. Stay true to your personality. Keep it concise and warm (2-3 sentences max).`,
+${style.initPrompt}`,
     });
 
     const assistantMsg = {
@@ -259,6 +321,7 @@ IMPORTANT: Never provide direct answers. Guide them with questions. Stay true to
         }`
       : "";
 
+    const style = TEACHING_STYLES[teachingStyle];
     const response = await base44.integrations.Core.InvokeLLM({
       model: selectedModel,
       prompt: `You are ${tutor.name}, a tutor with this personality: ${tutor.persona}
@@ -273,17 +336,7 @@ ${updatedMessages
 
 Student's message: ${textToSend}
 
-CRITICAL - YOUR TEACHING PHILOSOPHY:
-- NEVER give direct answers or do the work for them
-- Use the Socratic method: ask guiding questions to help them think
-- If they're stuck, break the problem into smaller steps with questions
-- Encourage their thinking process and celebrate effort
-- Keep responses SHORT (2-4 sentences)
-- Be warm and supportive, but let THEM figure it out
-- Stay true to your unique personality and teaching style
-- ADAPT to their learning profile - use their strengths and address their challenges
-
-Guide them with questions, not answers.
+${style.prompt}
 
 PROFILE UPDATES: As you interact, include profile_updates when you notice something new about the student:
 - learning_insight: how they learn best
@@ -301,7 +354,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
           suggestions: {
             type: "array",
             items: { type: "string" },
-            description: "2-3 short follow-up questions or prompts to help the student continue learning"
+            description: style.suggestionDesc
           },
           profile_updates: {
             type: "object",
@@ -435,6 +488,24 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
             </SelectContent>
           </Select>
         </div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <GraduationCap className="h-4 w-4 text-violet-500" />
+            <span className="font-medium">Style:</span>
+          </div>
+          <Select value={teachingStyle} onValueChange={handleStyleChange}>
+            <SelectTrigger className="w-[180px] h-9 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TEACHING_STYLES).map(([key, s]) => (
+                <SelectItem key={key} value={key}>
+                  {s.label} — {s.description}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
         {messages.length === 0 && initializing && (
@@ -563,14 +634,30 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
           >
             <div className="h-9 w-9 shrink-0"></div>
             <div className="flex flex-col gap-2">
-              <p className="text-xs font-medium text-slate-400">Continue the conversation:</p>
+              <p className="text-xs font-medium text-slate-400">
+                {TEACHING_STYLES[teachingStyle].pillLabel}
+              </p>
               <div className="flex flex-wrap gap-2">
                 {suggestions.map((suggestion, idx) => (
                   <button
                     key={idx}
-                    onClick={() => sendMessage(suggestion)}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-50 to-purple-50 hover:from-violet-100 hover:to-purple-100 border border-violet-200 hover:border-violet-300 text-sm text-violet-800 font-medium transition-all shadow-sm hover:shadow-md"
+                    onClick={() => {
+                      if (teachingStyle === "socratic") {
+                        // Student sends this as their message
+                        sendMessage(suggestion);
+                      } else {
+                        // Tutor's preemptive question — put it in the input so student can respond
+                        setInput(`Re: "${suggestion}" — `);
+                        document.querySelector('input[placeholder*="Ask a question"]')?.focus();
+                      }
+                    }}
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm hover:shadow-md ${
+                      teachingStyle === "socratic"
+                        ? "bg-gradient-to-r from-violet-50 to-purple-50 hover:from-violet-100 hover:to-purple-100 border border-violet-200 hover:border-violet-300 text-violet-800"
+                        : "bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200 hover:border-amber-300 text-amber-800"
+                    }`}
                   >
+                    {teachingStyle !== "socratic" && <span className="opacity-60 mr-1">🎓</span>}
                     {suggestion}
                   </button>
                 ))}
