@@ -463,6 +463,7 @@ PROFILE UPDATES: As you interact, include profile_updates when you notice someth
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="deepseek-r1-free">DeepSeek R1 (Free)</SelectItem>
+              <SelectItem value="gemma-3-27b-free">Gemma 3 27B (Free)</SelectItem>
               <SelectItem value="gpt-4o">GPT-4o</SelectItem>
               <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
               <SelectItem value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</SelectItem>

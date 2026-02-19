@@ -177,12 +177,31 @@ const rpc = {
 // ---------------------------------------------------------------------------
 const OPENROUTER_MODELS = {
   "deepseek-r1-free": "deepseek/deepseek-r1-0528:free",
+  "gemma-3-27b-free": "google/gemma-3-27b-it:free",
   "gpt-4o": "openai/gpt-4o",
   "gpt-4o-mini": "openai/gpt-4o-mini",
   "claude-3-5-sonnet-20241022": "anthropic/claude-3.5-sonnet",
   "claude-3-5-haiku-20241022": "anthropic/claude-3.5-haiku",
   "gemini-2.0-flash-exp": "google/gemini-2.0-flash-exp",
 };
+
+// Models that support vision (image input)
+const VISION_MODELS = new Set([
+  "google/gemma-3-27b-it:free",
+  "openai/gpt-4o",
+  "openai/gpt-4o-mini",
+  "anthropic/claude-3.5-sonnet",
+  "anthropic/claude-3.5-haiku",
+  "google/gemini-2.0-flash-exp",
+]);
+
+// Free vision-capable fallback for image tasks
+const FREE_VISION_MODEL = "google/gemma-3-27b-it:free";
+
+// Strip <think>...</think> blocks from reasoning models (DeepSeek R1)
+function stripThinkBlocks(text) {
+  return text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+}
 
 let _cachedApiKey = null;
 
@@ -250,11 +269,18 @@ const integrations = {
         return "I'm running in demo mode. To enable the AI tutor, add your OpenRouter API key in Admin Settings.";
       }
 
+      // Resolve model ID
+      let openRouterModel = OPENROUTER_MODELS[model] || model;
+      const hasImages = file_urls && file_urls.length > 0;
+
+      // Auto-switch to a vision model if images are provided and current model can't handle them
+      if (hasImages && !VISION_MODELS.has(openRouterModel)) {
+        openRouterModel = FREE_VISION_MODEL;
+      }
+
       // Build messages array for OpenRouter
       const messages = [];
-
-      // If file_urls provided, build multimodal content
-      if (file_urls && file_urls.length > 0) {
+      if (hasImages) {
         const content = [
           { type: "text", text: prompt },
           ...file_urls.map((url) => ({
@@ -267,20 +293,15 @@ const integrations = {
         messages.push({ role: "user", content: prompt });
       }
 
-      const openRouterModel = OPENROUTER_MODELS[model] || model;
-
       const body = {
         model: openRouterModel,
         messages,
         max_tokens: 1024,
       };
 
-      // Request JSON output when schema is provided
+      // Embed JSON schema in the prompt (works with all models including free ones)
       if (response_json_schema) {
-        // Use json_object (broadly supported) instead of json_schema
-        body.response_format = { type: "json_object" };
-        // Embed the schema in the prompt so all models understand the expected shape
-        const schemaHint = `\n\nRespond with a JSON object matching this schema: ${JSON.stringify(response_json_schema)}`;
+        const schemaHint = `\n\nYou MUST respond with ONLY a valid JSON object (no other text, no markdown, no code fences). Match this schema: ${JSON.stringify(response_json_schema)}`;
         if (Array.isArray(messages[0].content)) {
           messages[0].content[0].text += schemaHint;
         } else {
@@ -312,7 +333,13 @@ const integrations = {
       }
 
       const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || "";
+      let text = data.choices?.[0]?.message?.content || "";
+
+      // Strip <think>...</think> blocks from reasoning models (DeepSeek R1)
+      text = stripThinkBlocks(text);
+
+      // Strip markdown code fences if model wrapped JSON in them
+      text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 
       // Parse JSON response if schema was requested
       if (response_json_schema) {
